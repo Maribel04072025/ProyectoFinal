@@ -4,6 +4,9 @@
  */
 package autonoma.ProyectoFinal.main;
 
+import autonoma.ProyectoFinal.views.Juego;
+import javax.swing.JFrame;
+
 
 /**
  *
@@ -15,6 +18,14 @@ package autonoma.ProyectoFinal.main;
 
 public class Main {
     public static void main(String[] args) {
-        
+         JFrame ventana = new JFrame("El Reino de las Plantas Mágicas");
+         Juego juego = new Juego();
+         ventana.add(juego);
+         ventana.pack();
+         ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+         ventana.setLocationRelativeTo(null);
+         ventana.setVisible(true);
+         juego.iniciar();
+         
+        }
     }
-}
