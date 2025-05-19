@@ -1,19 +1,15 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package autonoma.ProyectoFinal.models;
 
-/**
- *
- * @author marib
- */
+import autonoma.ProyectoFinal.interfaces.Dañable;
+import autonoma.ProyectoFinal.models.Entidad;
 import java.awt.Color;
 import java.awt.Graphics;
 
-public class PlantaCorrupta extends Entidad implements Runnable {
 
+public class PlantaCorrupta extends Entidad implements Runnable, Dañable {
     private boolean activa = true;
+    private int vida = 50;
 
     public PlantaCorrupta(int x, int y) {
         super(x, y, 40, 40);
@@ -28,7 +24,7 @@ public class PlantaCorrupta extends Entidad implements Runnable {
 
     @Override
     public void actualizar() {
-        // Movimiento automático controlado por run()
+        // Movimiento controlado por run()
     }
 
     @Override
@@ -42,5 +38,18 @@ public class PlantaCorrupta extends Entidad implements Runnable {
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public void recibirDaño(int cantidad) {
+        vida -= cantidad;
+        if (vida <= 0) {
+            activa = false;
+            // podría haber lógica para eliminarla del juego
+        }
+    }
+
+    public boolean estaMuerta() {
+        return vida <= 0;
     }
 }
