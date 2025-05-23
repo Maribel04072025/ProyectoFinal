@@ -4,28 +4,11 @@
  */
 package autonoma.ProyectoFinal.main;
 
-import autonoma.ProyectoFinal.views.Juego;
+import autonoma.ProyectoFinal.views.MenuPrincipal;
 
-import javax.swing.JFrame;
-
-/**
- * Clase principal del juego.
- * Lanza la ventana principal y agrega el panel del juego.
- */
 public class Main {
     public static void main(String[] args) {
-        // Crear ventana
-        JFrame ventana = new JFrame("El Reino de las Plantas Mágicas");
-
-        // Crear panel de juego
-        Juego panelJuego = new Juego();
-        ventana.add(panelJuego);
-
-        // Configurar ventana
-        ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        ventana.pack(); // Ajusta al tamaño del panel
-        ventana.setLocationRelativeTo(null); // Centrar en pantalla
-        ventana.setResizable(false);
-        ventana.setVisible(true);
+        MenuPrincipal menu = new MenuPrincipal();
+        menu.setVisible(true);
     }
 }

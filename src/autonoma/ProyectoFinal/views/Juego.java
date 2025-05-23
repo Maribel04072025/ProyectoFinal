@@ -13,7 +13,7 @@ import java.awt.*;
 import java.awt.event.*;
 
 /**
- * Panel principal del juego. Maneja entrada, lógica y gráficos.
+ * Panel principal del juego. Maneja entrada, lógica, dibujo y finalización.
  */
 public class Juego extends JPanel {
 
@@ -30,7 +30,7 @@ public class Juego extends JPanel {
         setFocusable(true);
         requestFocusInWindow();
 
-        // Teclado
+        // Manejo del teclado
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -57,7 +57,7 @@ public class Juego extends JPanel {
     }
 
     private void iniciarTimers() {
-        // Timer del juego (actualización + repintado)
+        // Timer del juego (actualización + redibujado)
         timerJuego = new Timer(1000 / 60, e -> {
             if (!juegoTerminado) {
                 nivel.actualizar();
@@ -104,7 +104,7 @@ public class Juego extends JPanel {
         int anchoMax = 200;
         int altoBarra = 15;
 
-        // Fondo de barra
+        // Fondo de la barra
         g.setColor(Color.GRAY);
         g.fillRect(barraX, barraY, anchoMax, altoBarra);
 
@@ -117,13 +117,13 @@ public class Juego extends JPanel {
         g.setColor(Color.WHITE);
         g.drawRect(barraX, barraY, anchoMax, altoBarra);
 
-        // Texto de vida
+        // Texto sobre la barra
         g.setColor(Color.WHITE);
         g.drawString("Vida: " + vida, barraX + 70, barraY + 12);
     }
 
     /**
-     * Lógica de finalización del juego: guarda puntaje y muestra mensaje.
+     * Detiene el juego, guarda el puntaje y vuelve al menú principal.
      */
     public void finalizarJuego() {
         timerJuego.stop();
@@ -137,8 +137,14 @@ public class Juego extends JPanel {
             "¡Juego terminado!\nPuntaje: " + nivel.getPuntaje(),
             "Fin del juego", JOptionPane.INFORMATION_MESSAGE);
 
-        // Puedes volver al menú o cerrar:
-        // System.exit(0); // si deseas cerrar
+        // Volver al menú
+        JFrame ventana = (JFrame) SwingUtilities.getWindowAncestor(this);
+        ventana.dispose(); // cerrar la ventana actual
+
+        SwingUtilities.invokeLater(() -> {
+        MenuPrincipal menu = new MenuPrincipal();
+        menu.setVisible(true);
+    });
     }
 }
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
