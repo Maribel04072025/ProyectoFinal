@@ -6,35 +6,21 @@ package autonoma.ProyectoFinal.models;
 
 import java.awt.Graphics;
 import java.awt.Image;
-import java.awt.Color;
 import javax.swing.ImageIcon;
 
 /**
- * Planta que explota al ser tocada y desaparece.
+ * Cactus explosivo — hace daño medio y explota.
  */
 public class CactusExplosivo extends PlantaCorrupta {
 
-    private Image imagen;
     private boolean explotado = false;
 
     public CactusExplosivo(int x, int y, int ancho, int alto) {
         super(x, y, ancho, alto);
         try {
-            imagen = new ImageIcon(getClass().getResource("/autonoma/ProyectoFinal/resources/CactusExplosivo.png")).getImage();
+            imagenPlanta = new ImageIcon(getClass().getResource("/autonoma/ProyectoFinal/resources/CactusExplosivo.png")).getImage();
         } catch (Exception e) {
-            imagen = null;
-        }
-    }
-
-    @Override
-    public void dibujar(Graphics g) {
-        if (explotado) return;
-
-        if (imagen != null) {
-            g.drawImage(imagen, x, y, ancho, alto, null);
-        } else {
-            g.setColor(new Color(0, 200, 0));
-            g.fillRect(x, y, ancho, alto);
+            imagenPlanta = null;
         }
     }
 
@@ -45,5 +31,25 @@ public class CactusExplosivo extends PlantaCorrupta {
 
     public boolean haExplotado() {
         return explotado;
+    }
+
+    @Override
+    public int getDanio() {
+        return 15;
+    }
+
+    @Override
+    public int getPenalizacionPuntaje() {
+        return 10;
+    }
+
+    @Override
+    public void dibujar(Graphics g) {
+        if (!explotado && imagenPlanta != null) {
+            g.drawImage(imagenPlanta, x, y, ancho, alto, null);
+        } else if (!explotado) {
+            g.setColor(java.awt.Color.ORANGE);
+            g.fillRect(x, y, ancho, alto);
+        }
     }
 }

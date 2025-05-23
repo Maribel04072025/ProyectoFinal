@@ -6,36 +6,39 @@ package autonoma.ProyectoFinal.models;
 
 import java.awt.Graphics;
 import java.awt.Image;
-import java.awt.Color;
-import java.awt.Rectangle;
 import javax.swing.ImageIcon;
 
 /**
- * Planta que daña o ralentiza al jugador al tocarlo.
+ * Hiedra venenosa — daña poco pero es frecuente.
  */
 public class HiedraVenenosa extends PlantaCorrupta {
 
-    private Image imagen;
-
     public HiedraVenenosa(int x, int y, int ancho, int alto) {
         super(x, y, ancho, alto);
-
         try {
-            imagen = new ImageIcon(getClass().getResource("/autonoma/ProyectoFinal/resources/HiedraVenenosa.png")).getImage();
+            imagenPlanta = new ImageIcon(getClass().getResource("/autonoma/ProyectoFinal/resources/HiedraVenenosa.png")).getImage();
         } catch (Exception e) {
-            imagen = null;
+            imagenPlanta = null;
         }
     }
 
     @Override
+    public int getDanio() {
+        return 5; // daño leve
+    }
+
+    @Override
+    public int getPenalizacionPuntaje() {
+        return 5;
+    }
+
+    @Override
     public void dibujar(Graphics g) {
-        if (imagen != null) {
-            g.drawImage(imagen, x, y, ancho, alto, null);
+        if (imagenPlanta != null) {
+            g.drawImage(imagenPlanta, x, y, ancho, alto, null);
         } else {
-            g.setColor(new Color(100, 255, 100));
+            g.setColor(java.awt.Color.GREEN);
             g.fillOval(x, y, ancho, alto);
         }
     }
-
-    
 }

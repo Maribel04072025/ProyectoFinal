@@ -6,31 +6,38 @@ package autonoma.ProyectoFinal.models;
 
 import java.awt.Graphics;
 import java.awt.Image;
-import java.awt.Color;
 import javax.swing.ImageIcon;
 
 /**
- * Planta corrupta más rápida que se mueve agresivamente.
+ * Flor carnívora — planta más peligrosa.
  */
 public class FlorCarnivora extends PlantaCorrupta {
-
-    private Image imagen;
 
     public FlorCarnivora(int x, int y, int ancho, int alto) {
         super(x, y, ancho, alto);
         try {
-            imagen = new ImageIcon(getClass().getResource("/autonoma/ProyectoFinal/resources/FlorCarnivora.png")).getImage();
+            imagenPlanta = new ImageIcon(getClass().getResource("/autonoma/ProyectoFinal/resources/FlorCarnivora.png")).getImage();
         } catch (Exception e) {
-            imagen = null;
+            imagenPlanta = null;
         }
     }
 
     @Override
+    public int getDanio() {
+        return 20;
+    }
+
+    @Override
+    public int getPenalizacionPuntaje() {
+        return 20;
+    }
+
+    @Override
     public void dibujar(Graphics g) {
-        if (imagen != null) {
-            g.drawImage(imagen, x, y, ancho, alto, null);
+        if (imagenPlanta != null) {
+            g.drawImage(imagenPlanta, x, y, ancho, alto, null);
         } else {
-            g.setColor(Color.MAGENTA);
+            g.setColor(java.awt.Color.MAGENTA);
             g.fillOval(x, y, ancho, alto);
         }
     }

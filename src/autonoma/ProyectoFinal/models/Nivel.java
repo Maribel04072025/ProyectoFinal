@@ -10,6 +10,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * Clase que representa el nivel del juego.
+ * Controla el jugador, enemigos, rociadores, lógica de daño y puntuación.
+ */
 public class Nivel {
 
     private Jugador jugador;
@@ -26,24 +30,37 @@ public class Nivel {
         this.rociadores = new ArrayList<>();
         this.plantasAmistosas = new ArrayList<>();
         this.puntaje = 0;
+
         jugador = new Jugador(ancho / 10, alto - 80, 50, 50);
     }
 
     public void dibujar(Graphics g) {
         jugador.dibujar(g);
-        for (Rociador r : rociadores) r.dibujar(g);
-        for (PlantaCorrupta e : enemigos) e.dibujar(g);
-        for (PlantaAmistosa pa : plantasAmistosas) pa.dibujar(g);
+
+        for (Rociador r : rociadores) {
+            r.dibujar(g);
+        }
+
+        for (PlantaCorrupta enemigo : enemigos) {
+            enemigo.dibujar(g);
+        }
+
+        for (PlantaAmistosa planta : plantasAmistosas) {
+            planta.dibujar(g);
+        }
     }
 
     public void actualizar() {
         jugador.actualizar();
 
+        // Actualizar y eliminar rociadores inactivos
         Iterator<Rociador> itR = rociadores.iterator();
         while (itR.hasNext()) {
             Rociador r = itR.next();
             r.actualizar();
-            if (!r.estaActivo()) itR.remove();
+            if (!r.estaActivo()) {
+                itR.remove();
+            }
         }
 
         verificarColisiones();
@@ -75,20 +92,25 @@ public class Nivel {
     private void verificarRecolectables() {
         Iterator<PlantaAmistosa> itPA = plantasAmistosas.iterator();
         while (itPA.hasNext()) {
-            PlantaAmistosa pa = itPA.next();
-            if (pa.estaActiva() && pa.getBounds().intersects(jugador.getBounds())) {
-                jugador.curar(20);  // 💖 Curar
+            PlantaAmistosa planta = itPA.next();
+            if (planta.estaActiva() && planta.getBounds().intersects(jugador.getBounds())) {
+                jugador.curar(20);
                 jugador.aumentarPuntaje(10);
-                pa.recolectar();
+                planta.recolectar();
                 itPA.remove();
             }
         }
     }
 
     private void verificarDañoEnemigos() {
-        for (PlantaCorrupta enemigo : enemigos) {
+        Iterator<PlantaCorrupta> it = enemigos.iterator();
+        while (it.hasNext()) {
+            PlantaCorrupta enemigo = it.next();
             if (enemigo.getBounds().intersects(jugador.getBounds())) {
-                jugador.recibirDanio(5);  // 💥 Recibe daño
+                jugador.recibirDanio(enemigo.getDanio());
+                jugador.aumentarPuntaje(-enemigo.getPenalizacionPuntaje());
+                enemigo.detener();
+                it.remove();
                 break;
             }
         }
@@ -111,15 +133,24 @@ public class Nivel {
     }
 
     public void generarPlantaAmistosa() {
-        PlantaAmistosa planta = new PlantaAmistosa((int)(Math.random() * (ancho - 30)), (int)(Math.random() * (alto - 200)), 30, 30);
+        PlantaAmistosa planta = new PlantaAmistosa(
+            (int) (Math.random() * (ancho - 30)),
+            (int) (Math.random() * (alto - 200)),
+            30, 30
+        );
         plantasAmistosas.add(planta);
     }
 
     public void disparar() {
-        Rociador nuevo = new Rociador(jugador.getX() + jugador.getAncho(), jugador.getY() + jugador.getAlto() / 2 - 5, 20, 10);
+        Rociador nuevo = new Rociador(
+            jugador.getX() + jugador.getAncho(),
+            jugador.getY() + jugador.getAlto() / 2 - 5,
+            20, 10
+        );
         rociadores.add(nuevo);
     }
 
+    // Getters
     public Jugador getJugador() { return jugador; }
     public int getPuntaje() { return puntaje; }
     public List<PlantaCorrupta> getEnemigos() { return enemigos; }
