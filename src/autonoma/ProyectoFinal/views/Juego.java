@@ -4,16 +4,15 @@
  */
 package autonoma.ProyectoFinal.views;
 
-import autonoma.ProyectoFinal.models.Nivel;
-import autonoma.ProyectoFinal.models.Jugador;
-import autonoma.ProyectoFinal.models.ArchivoPuntaje;
+import autonoma.ProyectoFinal.models.*;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
 /**
- * Panel principal del juego. Maneja entrada, lógica, dibujo y finalización.
+ * Clase que representa el panel principal del juego.
+ * Controla dibujo, entrada del jugador, lógica del juego y finalización.
  */
 public class Juego extends JPanel {
 
@@ -22,6 +21,7 @@ public class Juego extends JPanel {
     private Timer timerEnemigos;
     private Timer timerAmistosas;
     private boolean juegoTerminado = false;
+    private Image fondoJuego;
 
     public Juego() {
         setPreferredSize(new Dimension(800, 600));
@@ -30,7 +30,14 @@ public class Juego extends JPanel {
         setFocusable(true);
         requestFocusInWindow();
 
-        // Manejo del teclado
+        // Cargar imagen de fondo
+        try {
+            fondoJuego = new ImageIcon(getClass().getResource("/autonoma/ProyectoFinal/resources/fondo_juego.png")).getImage();
+        } catch (Exception e) {
+            fondoJuego = null;
+        }
+
+        // Teclado
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -57,7 +64,7 @@ public class Juego extends JPanel {
     }
 
     private void iniciarTimers() {
-        // Timer del juego (actualización + redibujado)
+        // Timer principal
         timerJuego = new Timer(1000 / 60, e -> {
             if (!juegoTerminado) {
                 nivel.actualizar();
@@ -71,7 +78,7 @@ public class Juego extends JPanel {
         });
         timerJuego.start();
 
-        // Enemigos cada 2s
+        // Enemigos
         timerEnemigos = new Timer(2000, e -> {
             if (!juegoTerminado) {
                 nivel.generarEnemigo();
@@ -79,7 +86,7 @@ public class Juego extends JPanel {
         });
         timerEnemigos.start();
 
-        // Plantas amistosas cada 10s
+        // Plantas amistosas
         timerAmistosas = new Timer(10000, e -> {
             if (!juegoTerminado) {
                 nivel.generarPlantaAmistosa();
@@ -91,62 +98,68 @@ public class Juego extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+
+        // Fondo
+        if (fondoJuego != null) {
+            g.drawImage(fondoJuego, 0, 0, getWidth(), getHeight(), this);
+        }
+
+        // Entidades
         nivel.dibujar(g);
 
-        // Mostrar puntaje
+        // Puntaje
         g.setColor(Color.WHITE);
         g.drawString("Puntaje: " + nivel.getPuntaje(), 10, 20);
 
-        // Dibujar barra de vida
+        // Barra de vida
         int vida = nivel.getJugador().getVida();
         int barraX = 10;
         int barraY = 40;
         int anchoMax = 200;
         int altoBarra = 15;
 
-        // Fondo de la barra
         g.setColor(Color.GRAY);
         g.fillRect(barraX, barraY, anchoMax, altoBarra);
 
-        // Barra verde proporcional
         int anchoVida = (int) (anchoMax * (vida / 100.0));
         g.setColor(Color.GREEN);
         g.fillRect(barraX, barraY, anchoVida, altoBarra);
 
-        // Borde de la barra
         g.setColor(Color.WHITE);
         g.drawRect(barraX, barraY, anchoMax, altoBarra);
-
-        // Texto sobre la barra
-        g.setColor(Color.WHITE);
         g.drawString("Vida: " + vida, barraX + 70, barraY + 12);
     }
 
     /**
-     * Detiene el juego, guarda el puntaje y vuelve al menú principal.
+     * Finaliza el juego, guarda puntaje y vuelve al menú principal.
      */
     public void finalizarJuego() {
+        // Detener timers
         timerJuego.stop();
         timerEnemigos.stop();
         timerAmistosas.stop();
         juegoTerminado = true;
 
+        // Guardar puntaje
         ArchivoPuntaje.guardarPuntaje(nivel.getPuntaje());
 
+        // Mostrar mensaje
         JOptionPane.showMessageDialog(this,
             "¡Juego terminado!\nPuntaje: " + nivel.getPuntaje(),
             "Fin del juego", JOptionPane.INFORMATION_MESSAGE);
 
-        // Volver al menú
+        // Cerrar ventana actual y abrir el menú
         JFrame ventana = (JFrame) SwingUtilities.getWindowAncestor(this);
-        ventana.dispose(); // cerrar la ventana actual
+        ventana.dispose();
 
         SwingUtilities.invokeLater(() -> {
-        MenuPrincipal menu = new MenuPrincipal();
-        menu.setVisible(true);
-    });
+            MenuPrincipal menu = new MenuPrincipal();
+            menu.setVisible(true);
+        });
     }
 }
+
+
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 

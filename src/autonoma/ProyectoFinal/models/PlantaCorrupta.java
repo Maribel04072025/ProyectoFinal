@@ -9,8 +9,8 @@ import java.awt.Image;
 import java.awt.Color;
 
 /**
- * Clase base para todas las plantas enemigas corruptas.
- * Tiene comportamiento de movimiento aleatorio en un hilo separado.
+ * Planta enemiga base. Se mueve aleatoriamente en un hilo.
+ * Implementa Runnable y sobrescribe método abstracto actualizar().
  */
 public class PlantaCorrupta extends Entidad implements Runnable {
 
@@ -24,22 +24,26 @@ public class PlantaCorrupta extends Entidad implements Runnable {
         this.velocidad = 2;
         this.activa = true;
         this.random = new Random();
+
         try {
-            imagenPlanta = new ImageIcon(getClass().getResource("/autonoma/ProyectoFinal/resources/default.png")).getImage();
+            imagenPlanta = new ImageIcon(getClass().getResource("/autonoma/ProyectoFinal/resources/PlantaCorrupta.png")).getImage();
         } catch (Exception e) {
             imagenPlanta = null;
         }
     }
 
+    /**
+     * Movimiento aleatorio automático de la planta en un hilo.
+     */
     @Override
     public void run() {
         while (activa) {
-            int dx = random.nextInt(3) - 1;
+            int dx = random.nextInt(3) - 1; // -1, 0, 1
             int dy = random.nextInt(3) - 1;
-
             x += dx * velocidad;
             y += dy * velocidad;
 
+            // Limites
             if (x < 0) x = 0;
             if (y < 0) y = 0;
             if (x + ancho > 800) x = 800 - ancho;
@@ -53,6 +57,15 @@ public class PlantaCorrupta extends Entidad implements Runnable {
         }
     }
 
+    /**
+     * Método requerido por la clase abstracta Entidad.
+     * En este caso no se usa porque se maneja con hilos.
+     */
+    @Override
+    public void actualizar() {
+        // Este método está vacío porque se usa run() para el movimiento.
+    }
+
     public void detener() {
         activa = false;
     }
@@ -61,6 +74,7 @@ public class PlantaCorrupta extends Entidad implements Runnable {
         return activa;
     }
 
+    @Override
     public void dibujar(Graphics g) {
         if (imagenPlanta != null) {
             g.drawImage(imagenPlanta, x, y, ancho, alto, null);
@@ -71,20 +85,15 @@ public class PlantaCorrupta extends Entidad implements Runnable {
     }
 
     public int getDanio() {
-        return 10; // por defecto
+        return 10;
     }
 
     public int getPenalizacionPuntaje() {
-        return 0; // por defecto
+        return 0;
     }
 
     @Override
     public Rectangle getBounds() {
         return new Rectangle(x, y, ancho, alto);
-    }
-
-    @Override
-    public void actualizar() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

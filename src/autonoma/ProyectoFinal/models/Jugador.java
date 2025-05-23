@@ -14,7 +14,7 @@ public class Jugador extends Entidad {
     private int direccionY;
     private int puntaje;
     private boolean activo;
-    private int vida; // vida del jugador
+    private int vida;
 
     public Jugador(int x, int y, int ancho, int alto) {
         super(x, y, ancho, alto);
@@ -23,7 +23,7 @@ public class Jugador extends Entidad {
         this.direccionY = 0;
         this.puntaje = 0;
         this.activo = true;
-        this.vida = 100; // vida inicial
+        this.vida = 100;
     }
 
     public void mover(int dx, int dy) {
@@ -51,45 +51,45 @@ public class Jugador extends Entidad {
     }
 
     public void aumentarPuntaje(int puntos) {
-        this.puntaje += puntos;
+        puntaje += puntos;
+        if (puntaje < 0) puntaje = 0;
     }
 
     public int getPuntaje() {
         return puntaje;
     }
 
-    public void setActivo(boolean activo) {
-        this.activo = activo;
+    public int getVida() {
+        return vida;
+    }
+
+    public void recibirDanio(int cantidad) {
+        vida -= cantidad;
+        if (vida < 0) vida = 0;
+    }
+
+    public void curar(int cantidad) {
+        vida += cantidad;
+        if (vida > 100) vida = 100;
     }
 
     public boolean estaActivo() {
         return activo;
     }
 
+    public void setActivo(boolean activo) {
+        this.activo = activo;
+    }
+
     public void reiniciarPosicion(int nuevaX, int nuevaY) {
-        this.x = nuevaX;
-        this.y = nuevaY;
-        this.direccionX = 0;
-        this.direccionY = 0;
-    }
-
-    // Métodos de vida
-    public int getVida() {
-        return vida;
-    }
-
-    public void recibirDanio(int cantidad) {
-        this.vida -= cantidad;
-        if (vida < 0) vida = 0;
-    }
-
-    public void curar(int cantidad) {
-        this.vida += cantidad;
-        if (vida > 100) vida = 100;
+        x = nuevaX;
+        y = nuevaY;
+        direccionX = 0;
+        direccionY = 0;
     }
 
     @Override
     public Rectangle getBounds() {
-        return new Rectangle(x, y, ancho, alto);
+        return super.getBounds();
     }
 }

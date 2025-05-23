@@ -5,24 +5,19 @@
 package autonoma.ProyectoFinal.models;
 
 import java.awt.Graphics;
-import java.awt.Color;
 import java.awt.Image;
 import javax.swing.ImageIcon;
 import java.awt.Rectangle;
 
-/**
- * Planta especial que otorga puntos o cura al jugador cuando colisiona con ella.
- */
 public class PlantaAmistosa extends Entidad {
 
-    private Image imagen;
     private boolean activa;
+    private Image imagen;
 
     public PlantaAmistosa(int x, int y, int ancho, int alto) {
         super(x, y, ancho, alto);
         this.activa = true;
 
-        // Cargar imagen si existe, sino se dibuja como óvalo azul
         try {
             imagen = new ImageIcon(getClass().getResource("/autonoma/ProyectoFinal/resources/PlantaAmistosa.png")).getImage();
         } catch (Exception e) {
@@ -31,20 +26,18 @@ public class PlantaAmistosa extends Entidad {
     }
 
     @Override
-    public void dibujar(Graphics g) {
-        if (!activa) return;
-
-        if (imagen != null) {
-            g.drawImage(imagen, x, y, ancho, alto, null);
-        } else {
-            g.setColor(Color.CYAN);
-            g.fillOval(x, y, ancho, alto);
-        }
+    public void actualizar() {
+        // No tiene movimiento, pero se requiere implementar
     }
 
     @Override
-    public void actualizar() {
-        // Planta estática, no hace nada por sí misma
+    public void dibujar(Graphics g) {
+        if (activa && imagen != null) {
+            g.drawImage(imagen, x, y, ancho, alto, null);
+        } else if (activa) {
+            g.setColor(java.awt.Color.YELLOW);
+            g.fillOval(x, y, ancho, alto);
+        }
     }
 
     public boolean estaActiva() {
@@ -60,3 +53,4 @@ public class PlantaAmistosa extends Entidad {
         return new Rectangle(x, y, ancho, alto);
     }
 }
+

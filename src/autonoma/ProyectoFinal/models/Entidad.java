@@ -4,17 +4,12 @@
  */
 package autonoma.ProyectoFinal.models;
 
-/**
- *
- * @author marib
- */
-
-
 import java.awt.Graphics;
 import java.awt.Rectangle;
 
 /**
- * Clase base abstracta para todas las entidades del juego.
+ * Clase abstracta para representar entidades con posición, tamaño
+ * y comportamientos comunes como dibujar, actualizar y colisiones.
  */
 public abstract class Entidad {
     protected int x, y;
@@ -27,18 +22,38 @@ public abstract class Entidad {
         this.alto = alto;
     }
 
+    /**
+     * Dibuja la entidad en pantalla.
+     */
     public abstract void dibujar(Graphics g);
+
+    /**
+     * Actualiza el estado de la entidad.
+     */
     public abstract void actualizar();
 
+    /**
+     * Devuelve el rectángulo delimitador para detectar colisiones.
+     */
     public Rectangle getBounds() {
         return new Rectangle(x, y, ancho, alto);
     }
 
-    // Getters y setters
+    // Getters y setters útiles para otras clases
+
     public int getX() { return x; }
+
     public int getY() { return y; }
-    public void setX(int x) { this.x = x; }
-    public void setY(int y) { this.y = y; }
+
     public int getAncho() { return ancho; }
+
     public int getAlto() { return alto; }
+
+    public void setX(int x) { this.x = x; }
+
+    public void setY(int y) { this.y = y; }
+
+    public void setAncho(int ancho) { this.ancho = ancho; }
+
+    public void setAlto(int alto) { this.alto = alto; }
 }
