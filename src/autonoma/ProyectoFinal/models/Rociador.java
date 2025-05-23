@@ -10,26 +10,45 @@ import java.awt.Rectangle;
 
 public class Rociador extends Entidad {
 
-    private int velocidad;
-    private boolean activo;
+    private int x, y, ancho, alto;
+    private int velocidadX = 0, velocidadY = 0;
+    private boolean activo = true;
 
-    public Rociador(int x, int y, int ancho, int alto) {
+    public Rociador(int x, int y, int ancho, int alto, String direccion) {
         super(x, y, ancho, alto);
-        this.velocidad = 8;
-        this.activo = true;
-    }
+        this.x = x;
+        this.y = y;
+        this.ancho = ancho;
+        this.alto = alto;
 
-    @Override
-    public void actualizar() {
-        x += velocidad;
-        if (x > 800) {
-            activo = false;
+        int velocidad = 10;
+        switch (direccion) {
+            case "arriba":
+                velocidadY = -velocidad;
+                break;
+            case "abajo":
+                velocidadY = velocidad;
+                break;
+            case "izquierda":
+                velocidadX = -velocidad;
+                break;
+            case "derecha":
+                velocidadX = velocidad;
+                break;
         }
     }
 
     @Override
+    public void actualizar() {
+        x += velocidadX;
+        y += velocidadY;
+        // Podés desactivar si sale de pantalla
+        if (x < 0 || x > 1000 || y < 0 || y > 800) activo = false;
+    }
+
+    @Override
     public void dibujar(Graphics g) {
-        g.setColor(Color.BLUE);
+        g.setColor(Color.CYAN);
         g.fillRect(x, y, ancho, alto);
     }
 
@@ -38,7 +57,7 @@ public class Rociador extends Entidad {
     }
 
     public void desactivar() {
-        this.activo = false;
+        activo = false;
     }
 
     @Override

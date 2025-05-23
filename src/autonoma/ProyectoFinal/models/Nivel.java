@@ -19,11 +19,17 @@ public class Nivel {
     private int ancho, alto;
     private int puntaje;
     private int dificultad;
+    private static Jugador jugadorEstatico;
+    
 
     public Nivel(int ancho, int alto, int dificultad) {
         this.ancho = ancho;
         this.alto = alto;
         this.dificultad = dificultad;
+        jugador = new Jugador(ancho / 10, alto - 80, 50, 50, dificultad);
+        jugador.setNivel(this);
+
+        jugadorEstatico = jugador;
 
         enemigos = new ArrayList<>();
         rociadores = new ArrayList<>();
@@ -120,12 +126,12 @@ public class Nivel {
         int y = (int)(Math.random() * (alto / 2));
 
         switch (tipo) {
-            case 0 -> enemigo = new HiedraVenenosa(x, y, 40, 40);
-            case 1 -> enemigo = new CactusExplosivo(x, y, 40, 40);
-            default -> enemigo = new FlorCarnivora(x, y, 40, 40);
+            case 0 -> enemigo = new HiedraVenenosa(x, y, 40, 40, dificultad);
+            case 1 -> enemigo = new CactusExplosivo(x, y, 40, 40, dificultad);
+            default -> enemigo = new FlorCarnivora(x, y, 40, 40, dificultad);
         }
 
-        enemigo.setDanioBase(dificultad); // Aumenta daño según dificultad
+        enemigo.setDanioBase(dificultad);
         enemigos.add(enemigo);
         new Thread(enemigo).start();
     }
@@ -155,11 +161,44 @@ public class Nivel {
     }
 
     public void disparar() {
-        Rociador r = new Rociador(
-            jugador.getX() + jugador.getAncho(),
-            jugador.getY() + jugador.getAlto() / 2 - 5,
-            20, 10
-        );
+        int dx = jugador.getDireccionDisparoX();
+        int dy = jugador.getDireccionDisparoY();
+
+        int px = jugador.getX();
+        int py = jugador.getY();
+        int pw = jugador.getAncho();
+        int ph = jugador.getAlto();
+
+        int rx = px, ry = py;
+        String dir;
+
+        if (dx > 0) {
+            dir = "derecha";
+            rx = px + pw;
+            ry = py + ph / 2 - 5;
+        } 
+        else if (dx < 0) {
+            dir = "izquierda";
+            rx = px - 20;
+            ry = py + ph / 2 - 5;
+        }     
+        else if (dy > 0) {
+            dir = "abajo";
+            rx = px + pw / 2 - 5;
+            ry = py + ph;
+        } 
+        else if (dy < 0) {
+            dir = "arriba";
+            rx = px + pw / 2 - 5;
+            ry = py - 20;
+        } 
+        else {
+            dir = "derecha";
+            rx = px + pw;
+            ry = py + ph / 2 - 5;
+        }
+
+        Rociador r = new Rociador(rx, ry, 20, 10, dir);
         rociadores.add(r);
     }
 
@@ -168,6 +207,10 @@ public class Nivel {
             p.detener();
         }
         enemigos.clear();
+    }
+    
+    public static Jugador getJugadorEstatico() {
+        return jugadorEstatico;
     }
 
     // Getters

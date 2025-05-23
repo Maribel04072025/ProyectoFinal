@@ -10,8 +10,8 @@ import java.awt.Image;
 
 public class HiedraVenenosa extends PlantaCorrupta {
 
-    public HiedraVenenosa(int x, int y, int ancho, int alto) {
-        super(x, y, ancho, alto);
+    public HiedraVenenosa(int x, int y, int ancho, int alto, int dificultad) {
+        super(x, y, ancho, alto, dificultad);
         try {
             imagenPlanta = new ImageIcon(getClass().getResource("/autonoma/ProyectoFinal/resources/HiedraVenenosa.png")).getImage();
         } catch (Exception e) {

@@ -22,6 +22,9 @@ public class Jugador extends Entidad {
     private int vidaMaxima;
     private Inventario inventario;
     private Nivel nivel;
+    private String direccionActual = "derecha";
+    private int direccionDisparoX = 1; 
+    private int direccionDisparoY = 0;
 
     /**
      * Constructor del jugador con dificultad.
@@ -50,8 +53,13 @@ public class Jugador extends Entidad {
     }
 
     public void mover(int dx, int dy) {
-        this.direccionX = dx;
-        this.direccionY = dy;
+        direccionX = dx;
+        direccionY = dy;
+
+        if (dx > 0) direccionActual = "derecha";
+        else if (dx < 0) direccionActual = "izquierda";
+        else if (dy > 0) direccionActual = "abajo";
+        if (dy < 0) direccionActual = "arriba";
     }
 
     @Override
@@ -77,6 +85,10 @@ public class Jugador extends Entidad {
     public void aumentarPuntaje(int puntos) {
         puntaje += puntos;
         if (puntaje < 0) puntaje = 0;
+    }
+    
+    public String getDireccionActual() {
+        return direccionActual;
     }
 
     public int getPuntaje() {
@@ -141,6 +153,30 @@ public class Jugador extends Entidad {
     @Override
     public Rectangle getBounds() {
         return new Rectangle(x, y, ancho, alto);
+    }
+    
+    public void setDireccionX(int dx) {
+        direccionX = dx;
+    }
+
+    public void setDireccionY(int dy) {
+        direccionY = dy;
+    }  
+    
+    public int getDireccionDisparoX() {
+        return direccionDisparoX;
+    }
+
+    public int getDireccionDisparoY() {
+        return direccionDisparoY;
+    } 
+
+    public void setDireccionDisparoX(int dx) {
+        direccionDisparoX = dx;
+    }
+
+    public void setDireccionDisparoY(int dy) {
+        direccionDisparoY = dy;
     }
 }
 

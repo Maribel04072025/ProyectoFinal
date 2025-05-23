@@ -10,8 +10,8 @@ import java.awt.Image;
 
 public class CactusExplosivo extends PlantaCorrupta {
 
-    public CactusExplosivo(int x, int y, int ancho, int alto) {
-        super(x, y, ancho, alto);
+    public CactusExplosivo(int x, int y, int ancho, int alto, int dificultad) {
+        super(x, y, ancho, alto, dificultad);
         try {
             imagenPlanta = new ImageIcon(getClass().getResource("/autonoma/ProyectoFinal/resources/CactusExplosivo.png")).getImage();
         } catch (Exception e) {

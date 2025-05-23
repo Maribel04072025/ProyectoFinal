@@ -15,12 +15,26 @@ public class PlantaCorrupta extends Entidad implements Runnable {
     protected Random random;
     protected Image imagenPlanta;
     protected int danioBase = 10;
+    protected int dificultad;
+    private int dx, dy;
+    
 
-    public PlantaCorrupta(int x, int y, int ancho, int alto) {
+    public PlantaCorrupta(int x, int y, int ancho, int alto, int dificultad) {
         super(x, y, ancho, alto);
-        this.velocidad = 2;
         this.activa = true;
         this.random = new Random();
+        this.dificultad = dificultad;
+
+        switch (dificultad) {
+            case 1 -> this.velocidad = 0;
+            case 2 -> this.velocidad = 5;
+            case 3 -> this.velocidad = 10;
+            default -> this.velocidad = 2;
+        }
+
+        // Dirección aleatoria inicial (-1 o 1)
+        this.dx = random.nextBoolean() ? 1 : -1;
+        this.dy = random.nextBoolean() ? 1 : -1;
 
         try {
             imagenPlanta = new ImageIcon(getClass().getResource("/autonoma/ProyectoFinal/resources/PlantaCorrupta.png")).getImage();
@@ -32,24 +46,33 @@ public class PlantaCorrupta extends Entidad implements Runnable {
     @Override
     public void run() {
         while (activa) {
-            int dx = random.nextInt(3) - 1; // -1, 0, 1
-            int dy = random.nextInt(3) - 1;
-            x += dx * velocidad;
-            y += dy * velocidad;
+            // Calcular nueva posición
+            int nuevoX = x + dx * velocidad;
+            int nuevoY = y + dy * velocidad;
 
-            // Límites del campo
-            if (x < 0) x = 0;
-            if (y < 0) y = 0;
-            if (x + ancho > 800) x = 800 - ancho;
-            if (y + alto > 600) y = 600 - alto;
+            // Rebotar en bordes horizontales
+            if (nuevoX < 0 || nuevoX + ancho > 800) {
+                dx *= -1;
+                nuevoX = x + dx * velocidad;
+            }
+
+            // Rebotar en bordes verticales
+            if (nuevoY < 0 || nuevoY + alto > 600) {
+                dy *= -1;
+                nuevoY = y + dy * velocidad;
+            }
+
+            x = nuevoX;
+            y = nuevoY;
 
             try {
-                Thread.sleep(200);
+                Thread.sleep(100); // Actualiza cada 100 ms
             } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
+                break;
             }
         }
     }
+
 
     @Override
     public void actualizar() {

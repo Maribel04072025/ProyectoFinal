@@ -18,6 +18,7 @@ public class Juego extends JPanel {
     private Timer timerPlantas;
     private Timer timerObjetos;
     private Image fondoJuego;
+    private boolean juegoPausado = false;
     private boolean juegoTerminado = false;
 
     public Juego(int dificultad) {
@@ -40,10 +41,50 @@ public class Juego extends JPanel {
             public void keyPressed(KeyEvent e) {
                 Jugador j = nivel.getJugador();
                 switch (e.getKeyCode()) {
-                    case KeyEvent.VK_UP -> j.mover(0, -1);
-                    case KeyEvent.VK_DOWN -> j.mover(0, 1);
-                    case KeyEvent.VK_LEFT -> j.mover(-1, 0);
-                    case KeyEvent.VK_RIGHT -> j.mover(1, 0);
+                    case KeyEvent.VK_UP -> {
+                        j.setDireccionX(0);
+                        j.setDireccionY(-1);
+                        j.setDireccionDisparoX(0);
+                        j.setDireccionDisparoY(-1);
+                    }
+                    case KeyEvent.VK_DOWN -> {
+                        j.setDireccionX(0);
+                        j.setDireccionY(1);
+                        j.setDireccionDisparoX(0);
+                        j.setDireccionDisparoY(1);
+                    }
+                    case KeyEvent.VK_LEFT -> {
+                        j.setDireccionX(-1);
+                        j.setDireccionY(0);
+                        j.setDireccionDisparoX(-1);
+                        j.setDireccionDisparoY(0);
+                    }
+                    case KeyEvent.VK_RIGHT -> {
+                        j.setDireccionX(1);
+                        j.setDireccionY(0);
+                        j.setDireccionDisparoX(1);
+                        j.setDireccionDisparoY(0);
+                    }
+                    case KeyEvent.VK_ESCAPE -> {
+                        juegoPausado = !juegoPausado;
+                        if (juegoPausado) {
+                        timerJuego.stop();
+                        timerEnemigos.stop();
+                        timerPlantas.stop();
+                        timerObjetos.stop();
+                        } else {
+                        timerJuego.start();
+                        timerEnemigos.start();
+                        timerPlantas.start();
+                        timerObjetos.start();
+                        }
+                        repaint(); // actualiza el mensaje
+                    }
+                    case KeyEvent.VK_S -> {
+                        if (juegoPausado) {
+                            finalizarJuego();
+                        }
+                    }
                     case KeyEvent.VK_SPACE -> nivel.disparar();
                     case KeyEvent.VK_1 -> j.getInventario().usarObjeto("Poción Curativa", j);
                     case KeyEvent.VK_2 -> j.getInventario().usarObjeto("Semilla Rara", j);
@@ -55,7 +96,9 @@ public class Juego extends JPanel {
             public void keyReleased(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN ||
                     e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT) {
-                    nivel.getJugador().mover(0, 0);
+                    Jugador j = nivel.getJugador();
+                    j.setDireccionX(0);
+                    j.setDireccionY(0);
                 }
             }
         });
@@ -126,6 +169,16 @@ public class Juego extends JPanel {
         for (ObjetoInventario obj : j.getInventario().getObjetos()) {
             g.drawString(i + ". " + obj.getNombre(), x, y + i * 15);
             i++;
+        }
+        if (juegoPausado) {
+            g.setColor(new Color(0, 0, 0, 150));
+            g.fillRect(0, 0, getWidth(), getHeight());
+            g.setColor(Color.WHITE);
+            g.setFont(new Font("Arial", Font.BOLD, 24));
+            g.drawString("Juego Pausado", 300, 250);
+            g.setFont(new Font("Arial", Font.PLAIN, 16));
+            g.drawString("Presiona ESC para continuar", 280, 280);
+            g.drawString("Presiona S para salir al menú principal", 240, 310);
         }
     }
 
