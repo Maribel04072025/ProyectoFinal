@@ -4,97 +4,76 @@
  */
 package autonoma.ProyectoFinal.views;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Font;
+import autonoma.ProyectoFinal.models.ArchivoPuntaje;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 
 /**
- *
- * @author juane
+ * Ventana inicial del juego, muestra el menú principal con botón para iniciar el juego
+ * y el puntaje máximo registrado.
  */
 public class MenuPrincipal extends JFrame {
 
     public MenuPrincipal() {
         setTitle("El Reino de las Plantas Mágicas");
-        setSize(600, 400);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setSize(800, 600);
         setLocationRelativeTo(null);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);
 
-        // Panel del menú
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setBackground(new Color(34, 139, 34)); // verde bosque
+        initUI();
+    }
 
-        JLabel titulo = new JLabel("El Reino de las Plantas Mágicas");
+    private void initUI() {
+        JPanel panel = new JPanel();
+        panel.setBackground(new Color(30, 30, 30));
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+        JLabel titulo = new JLabel("El Reino de las Plantas Mágicas ");
+        titulo.setFont(new Font("Serif", Font.BOLD, 32));
+        titulo.setForeground(Color.GREEN);
         titulo.setAlignmentX(Component.CENTER_ALIGNMENT);
-        titulo.setFont(new Font("Serif", Font.BOLD, 28));
-        titulo.setForeground(Color.WHITE);
-        panel.add(Box.createVerticalStrut(30));
+        panel.add(Box.createVerticalStrut(80));
         panel.add(titulo);
 
-        JButton btnJugar = new JButton("Iniciar Juego");
-        JButton btnPuntajes = new JButton("Ver Puntajes");
-        JButton btnSalir = new JButton("Salir");
+        JLabel record = new JLabel("Récord actual: " + ArchivoPuntaje.leerPuntaje() + " puntos");
+        record.setFont(new Font("Arial", Font.PLAIN, 18));
+        record.setForeground(Color.WHITE);
+        record.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.add(Box.createVerticalStrut(30));
+        panel.add(record);
 
-        btnJugar.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btnPuntajes.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btnSalir.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        panel.add(Box.createVerticalStrut(40));
-        panel.add(btnJugar);
-        panel.add(Box.createVerticalStrut(20));
-        panel.add(btnPuntajes);
-        panel.add(Box.createVerticalStrut(20));
-        panel.add(btnSalir);
+        JButton botonJugar = new JButton("Iniciar Juego");
+        botonJugar.setFont(new Font("Arial", Font.BOLD, 20));
+        botonJugar.setAlignmentX(Component.CENTER_ALIGNMENT);
+        botonJugar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                iniciarJuego();
+            }
+        });
+        panel.add(Box.createVerticalStrut(50));
+        panel.add(botonJugar);
 
         add(panel);
-
-        // Acción del botón Jugar
-        btnJugar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dispose(); // cierra el menú
-                JFrame ventanaJuego = new JFrame("Juego");
-                Juego juego = new Juego();
-                ventanaJuego.add(juego);
-                ventanaJuego.pack();
-                ventanaJuego.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                ventanaJuego.setLocationRelativeTo(null);
-                ventanaJuego.setVisible(true);
-                juego.iniciar();
-            }
-        });
-
-        // Acción del botón Ver Puntajes
-        btnPuntajes.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int p = persistencia.ArchivoPuntaje.leerPuntaje();
-                JOptionPane.showMessageDialog(null, "Puntaje máximo: " + p);
-            }
-        });
-
-        // Acción del botón Salir
-        btnSalir.addActionListener(e -> System.exit(0));
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            MenuPrincipal menu = new MenuPrincipal();
-            menu.setVisible(true);
-        });
+    /**
+     * Reemplaza el contenido de la ventana con el panel del juego.
+     */
+    private void iniciarJuego() {
+        getContentPane().removeAll();
+        Juego juego = new Juego();
+        add(juego);
+        revalidate();
+        repaint();
+        juego.requestFocusInWindow();
     }
 }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
