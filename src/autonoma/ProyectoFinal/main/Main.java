@@ -6,9 +6,17 @@ package autonoma.ProyectoFinal.main;
 
 import autonoma.ProyectoFinal.views.MenuPrincipal;
 
+import javax.swing.*;
+
 public class Main {
     public static void main(String[] args) {
-        MenuPrincipal menu = new MenuPrincipal();
-        menu.setVisible(true);
+        SwingUtilities.invokeLater(() -> {
+            JFrame ventana = new JFrame("El Reino de las Plantas Mágicas");
+            ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            ventana.setContentPane(new MenuPrincipal());
+            ventana.setSize(800, 600);
+            ventana.setLocationRelativeTo(null);
+            ventana.setVisible(true);
+        });
     }
 }

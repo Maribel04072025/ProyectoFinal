@@ -9,10 +9,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-/**
- * Clase que representa un nivel del juego. Controla al jugador, enemigos,
- * objetos y la lógica de juego general.
- */
 public class Nivel {
 
     private Jugador jugador;
@@ -22,18 +18,20 @@ public class Nivel {
     private List<ObjetoInventario> objetos;
     private int ancho, alto;
     private int puntaje;
+    private int dificultad;
 
-    public Nivel(int ancho, int alto) {
+    public Nivel(int ancho, int alto, int dificultad) {
         this.ancho = ancho;
         this.alto = alto;
-        this.enemigos = new ArrayList<>();
-        this.rociadores = new ArrayList<>();
-        this.plantasAmistosas = new ArrayList<>();
-        this.objetos = new ArrayList<>();
-        this.puntaje = 0;
+        this.dificultad = dificultad;
 
-        jugador = new Jugador(ancho / 10, alto - 80, 50, 50);
-        jugador.setNivel(this); // Conectar jugador ↔ nivel
+        enemigos = new ArrayList<>();
+        rociadores = new ArrayList<>();
+        plantasAmistosas = new ArrayList<>();
+        objetos = new ArrayList<>();
+
+        jugador = new Jugador(ancho / 10, alto - 80, 50, 50, dificultad);
+        jugador.setNivel(this);
     }
 
     public void dibujar(Graphics g) {
@@ -127,6 +125,7 @@ public class Nivel {
             default -> enemigo = new FlorCarnivora(x, y, 40, 40);
         }
 
+        enemigo.setDanioBase(dificultad); // Aumenta daño según dificultad
         enemigos.add(enemigo);
         new Thread(enemigo).start();
     }
@@ -174,4 +173,5 @@ public class Nivel {
     // Getters
     public Jugador getJugador() { return jugador; }
     public int getPuntaje() { return puntaje; }
+    public int getDificultad() { return dificultad; }
 }

@@ -4,16 +4,11 @@
  */
 package autonoma.ProyectoFinal.models;
 
+import javax.swing.ImageIcon;
 import java.awt.Graphics;
 import java.awt.Image;
-import javax.swing.ImageIcon;
 
-/**
- * Cactus explosivo — hace daño medio y explota.
- */
 public class CactusExplosivo extends PlantaCorrupta {
-
-    private boolean explotado = false;
 
     public CactusExplosivo(int x, int y, int ancho, int alto) {
         super(x, y, ancho, alto);
@@ -24,32 +19,8 @@ public class CactusExplosivo extends PlantaCorrupta {
         }
     }
 
-    public void explotar() {
-        this.explotado = true;
-        detener();
-    }
-
-    public boolean haExplotado() {
-        return explotado;
-    }
-
-    @Override
-    public int getDanio() {
-        return 15;
-    }
-
-    @Override
-    public int getPenalizacionPuntaje() {
-        return 10;
-    }
-
     @Override
     public void dibujar(Graphics g) {
-        if (!explotado && imagenPlanta != null) {
-            g.drawImage(imagenPlanta, x, y, ancho, alto, null);
-        } else if (!explotado) {
-            g.setColor(java.awt.Color.ORANGE);
-            g.fillRect(x, y, ancho, alto);
-        }
+        super.dibujar(g);
     }
 }

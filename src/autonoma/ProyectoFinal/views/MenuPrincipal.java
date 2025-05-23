@@ -8,79 +8,63 @@ import autonoma.ProyectoFinal.models.ArchivoPuntaje;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
-public class MenuPrincipal extends JFrame {
+/**
+ * Menú principal del juego con fondo, récord y botones bien ubicados.
+ */
+public class MenuPrincipal extends JPanel {
 
     private Image fondo;
 
     public MenuPrincipal() {
-        setTitle("El Reino de las Plantas Mágicas");
-        setSize(800, 600);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setResizable(false);
+        setLayout(null);
+        setPreferredSize(new Dimension(800, 600));
 
         // Cargar imagen de fondo
-        fondo = new ImageIcon(getClass().getResource("/autonoma/ProyectoFinal/resources/fondo_menu.png")).getImage();
+        try {
+            fondo = new ImageIcon(getClass().getResource("/autonoma/ProyectoFinal/resources/menu_fondo.png")).getImage();
+        } catch (Exception e) {
+            fondo = null;
+        }
 
-        initUI();
-    }
+        // Récord actual, más abajo para no tapar el título
+        int record = ArchivoPuntaje.obtenerPuntajeMaximo();
+        JLabel recordLabel = new JLabel("Récord actual: " + record + " puntos", SwingConstants.CENTER);
+        recordLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        recordLabel.setForeground(Color.WHITE);
+        recordLabel.setBounds(250, 210, 300, 30);
+        add(recordLabel);
 
-    private void initUI() {
-        JPanel panel = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                g.drawImage(fondo, 0, 0, getWidth(), getHeight(), this);
-            }
-        };
+        // Botón Jugar
+        JButton jugar = new JButton("Jugar");
+        jugar.setBounds(300, 260, 200, 40);
+        add(jugar);
 
-        panel.setOpaque(false);
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setPreferredSize(new Dimension(800, 600));
+        // Botón Salir
+        JButton salir = new JButton("Salir");
+        salir.setBounds(300, 320, 200, 40);
+        add(salir);
 
-        // Record (más abajo, sin título)
-        JLabel record = new JLabel(" Récord actual: " + ArchivoPuntaje.leerPuntaje() + " puntos");
-        record.setFont(new Font("Arial", Font.BOLD, 20));
-        record.setForeground(Color.WHITE);
-        record.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        JButton botonJugar = new JButton("Iniciar Juego");
-        botonJugar.setFont(new Font("Arial", Font.BOLD, 24));
-        botonJugar.setAlignmentX(Component.CENTER_ALIGNMENT);
-        botonJugar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                iniciarJuego();
-            }
+        // Acción botón Jugar
+        jugar.addActionListener(e -> {
+            JFrame ventana = (JFrame) SwingUtilities.getWindowAncestor(this);
+            ventana.setContentPane(new PantallaDificultad(ventana));
+            ventana.revalidate();
         });
 
-        JButton botonSalir = new JButton("Salir");
-        botonSalir.setFont(new Font("Arial", Font.BOLD, 20));
-        botonSalir.setAlignmentX(Component.CENTER_ALIGNMENT);
-        botonSalir.addActionListener(e -> System.exit(0));
-
-        panel.add(Box.createVerticalStrut(280)); // espacio arriba
-        panel.add(record);
-        panel.add(Box.createVerticalStrut(30));
-        panel.add(botonJugar);
-        panel.add(Box.createVerticalStrut(20));
-        panel.add(botonSalir);
-
-        setContentPane(panel);
+        // Acción botón Salir
+        salir.addActionListener(e -> System.exit(0));
     }
 
-    private void iniciarJuego() {
-        getContentPane().removeAll();
-        Juego juego = new Juego();
-        add(juego);
-        revalidate();
-        repaint();
-        juego.requestFocusInWindow();
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        if (fondo != null) {
+            g.drawImage(fondo, 0, 0, getWidth(), getHeight(), this); // Escala a tamaño panel
+        }
     }
 }
+
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

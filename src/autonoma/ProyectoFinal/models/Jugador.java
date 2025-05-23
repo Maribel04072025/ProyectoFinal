@@ -9,7 +9,7 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 
 /**
- * Clase que representa al jugador.
+ * Clase que representa al jugador del juego.
  */
 public class Jugador extends Entidad {
 
@@ -19,17 +19,33 @@ public class Jugador extends Entidad {
     private int puntaje;
     private boolean activo;
     private int vida;
+    private int vidaMaxima;
     private Inventario inventario;
-    private Nivel nivel; // referencia al nivel actual
+    private Nivel nivel;
 
-    public Jugador(int x, int y, int ancho, int alto) {
+    /**
+     * Constructor del jugador con dificultad.
+     * @param x posición X inicial
+     * @param y posición Y inicial
+     * @param ancho ancho del jugador
+     * @param alto alto del jugador
+     * @param dificultad 1: fácil, 2: media, 3: difícil
+     */
+    public Jugador(int x, int y, int ancho, int alto, int dificultad) {
         super(x, y, ancho, alto);
-        this.velocidad = 7;
+        this.velocidad = 5;
         this.direccionX = 0;
         this.direccionY = 0;
         this.puntaje = 0;
         this.activo = true;
-        this.vida = 100;
+
+        switch (dificultad) {
+            case 1 -> this.vida = this.vidaMaxima = 100;
+            case 2 -> this.vida = this.vidaMaxima = 60;
+            case 3 -> this.vida = this.vidaMaxima = 40;
+            default -> this.vida = this.vidaMaxima = 100;
+        }
+
         this.inventario = new Inventario();
     }
 
@@ -45,7 +61,7 @@ public class Jugador extends Entidad {
         x += direccionX * velocidad;
         y += direccionY * velocidad;
 
-        // Limitar al área del juego
+        // Limitar dentro del área
         if (x < 0) x = 0;
         if (y < 0) y = 0;
         if (x + ancho > 800) x = 800 - ancho;
@@ -71,6 +87,10 @@ public class Jugador extends Entidad {
         return vida;
     }
 
+    public int getVidaMaxima() {
+        return vidaMaxima;
+    }
+
     public void recibirDanio(int cantidad) {
         vida -= cantidad;
         if (vida < 0) vida = 0;
@@ -78,7 +98,9 @@ public class Jugador extends Entidad {
 
     public void curar(int cantidad) {
         vida += cantidad;
-        if (vida > 100) vida = 100;
+        if (vida > vidaMaxima) {
+            vida = vidaMaxima;
+        }
     }
 
     public boolean estaActivo() {
@@ -121,3 +143,4 @@ public class Jugador extends Entidad {
         return new Rectangle(x, y, ancho, alto);
     }
 }
+

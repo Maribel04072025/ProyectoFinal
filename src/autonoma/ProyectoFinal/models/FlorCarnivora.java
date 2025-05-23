@@ -4,13 +4,10 @@
  */
 package autonoma.ProyectoFinal.models;
 
+import javax.swing.ImageIcon;
 import java.awt.Graphics;
 import java.awt.Image;
-import javax.swing.ImageIcon;
 
-/**
- * Flor carnívora — planta más peligrosa.
- */
 public class FlorCarnivora extends PlantaCorrupta {
 
     public FlorCarnivora(int x, int y, int ancho, int alto) {
@@ -23,22 +20,7 @@ public class FlorCarnivora extends PlantaCorrupta {
     }
 
     @Override
-    public int getDanio() {
-        return 20;
-    }
-
-    @Override
-    public int getPenalizacionPuntaje() {
-        return 20;
-    }
-
-    @Override
     public void dibujar(Graphics g) {
-        if (imagenPlanta != null) {
-            g.drawImage(imagenPlanta, x, y, ancho, alto, null);
-        } else {
-            g.setColor(java.awt.Color.MAGENTA);
-            g.fillOval(x, y, ancho, alto);
-        }
+        super.dibujar(g);
     }
 }

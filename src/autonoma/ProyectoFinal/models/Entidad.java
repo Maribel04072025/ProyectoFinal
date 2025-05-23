@@ -8,12 +8,14 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 
 /**
- * Clase abstracta para representar entidades con posición, tamaño
- * y comportamientos comunes como dibujar, actualizar y colisiones.
+ * Clase abstracta base para todas las entidades del juego.
  */
 public abstract class Entidad {
-    protected int x, y;
-    protected int ancho, alto;
+
+    protected int x;
+    protected int y;
+    protected int ancho;
+    protected int alto;
 
     public Entidad(int x, int y, int ancho, int alto) {
         this.x = x;
@@ -22,38 +24,50 @@ public abstract class Entidad {
         this.alto = alto;
     }
 
-    /**
-     * Dibuja la entidad en pantalla.
-     */
-    public abstract void dibujar(Graphics g);
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public int getAncho() {
+        return ancho;
+    }
+
+    public int getAlto() {
+        return alto;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    public void setAncho(int ancho) {
+        this.ancho = ancho;
+    }
+
+    public void setAlto(int alto) {
+        this.alto = alto;
+    }
 
     /**
-     * Actualiza el estado de la entidad.
+     * Método abstracto para actualizar la lógica de la entidad.
      */
     public abstract void actualizar();
 
     /**
-     * Devuelve el rectángulo delimitador para detectar colisiones.
+     * Método abstracto para dibujar la entidad.
      */
-    public Rectangle getBounds() {
-        return new Rectangle(x, y, ancho, alto);
-    }
+    public abstract void dibujar(Graphics g);
 
-    // Getters y setters útiles para otras clases
-
-    public int getX() { return x; }
-
-    public int getY() { return y; }
-
-    public int getAncho() { return ancho; }
-
-    public int getAlto() { return alto; }
-
-    public void setX(int x) { this.x = x; }
-
-    public void setY(int y) { this.y = y; }
-
-    public void setAncho(int ancho) { this.ancho = ancho; }
-
-    public void setAlto(int alto) { this.alto = alto; }
+    /**
+     * Devuelve el área de colisión de la entidad.
+     */
+    public abstract Rectangle getBounds();
 }

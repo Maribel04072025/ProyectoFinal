@@ -10,65 +10,61 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-/**
- * Panel principal del juego.
- */
 public class Juego extends JPanel {
 
     private Nivel nivel;
     private Timer timerJuego;
     private Timer timerEnemigos;
-    private Timer timerAmistosas;
+    private Timer timerPlantas;
     private Timer timerObjetos;
-    private boolean juegoTerminado = false;
     private Image fondoJuego;
+    private boolean juegoTerminado = false;
 
-    public Juego() {
+    public Juego(int dificultad) {
         setPreferredSize(new Dimension(800, 600));
-        setBackground(Color.BLACK);
-        nivel = new Nivel(800, 600);
         setFocusable(true);
         requestFocusInWindow();
+        setBackground(Color.BLACK);
 
-        // Cargar imagen de fondo
+        nivel = new Nivel(800, 600, dificultad);
+
         try {
             fondoJuego = new ImageIcon(getClass().getResource("/autonoma/ProyectoFinal/resources/fondo_juego.png")).getImage();
         } catch (Exception e) {
             fondoJuego = null;
         }
 
-        // Teclado
+        // Control del teclado
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                Jugador jugador = nivel.getJugador();
+                Jugador j = nivel.getJugador();
                 switch (e.getKeyCode()) {
-                    case KeyEvent.VK_UP -> jugador.mover(0, -1);
-                    case KeyEvent.VK_DOWN -> jugador.mover(0, 1);
-                    case KeyEvent.VK_LEFT -> jugador.mover(-1, 0);
-                    case KeyEvent.VK_RIGHT -> jugador.mover(1, 0);
+                    case KeyEvent.VK_UP -> j.mover(0, -1);
+                    case KeyEvent.VK_DOWN -> j.mover(0, 1);
+                    case KeyEvent.VK_LEFT -> j.mover(-1, 0);
+                    case KeyEvent.VK_RIGHT -> j.mover(1, 0);
                     case KeyEvent.VK_SPACE -> nivel.disparar();
-                    case KeyEvent.VK_1 -> jugador.getInventario().usarObjeto("Poción Curativa", jugador);
-                    case KeyEvent.VK_2 -> jugador.getInventario().usarObjeto("Semilla Rara", jugador);
-                    case KeyEvent.VK_3 -> jugador.getInventario().usarObjeto("Esencia Mágica", jugador);
+                    case KeyEvent.VK_1 -> j.getInventario().usarObjeto("Poción Curativa", j);
+                    case KeyEvent.VK_2 -> j.getInventario().usarObjeto("Semilla Rara", j);
+                    case KeyEvent.VK_3 -> j.getInventario().usarObjeto("Esencia Mágica", j);
                 }
             }
 
             @Override
             public void keyReleased(KeyEvent e) {
-                Jugador jugador = nivel.getJugador();
                 if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN ||
                     e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT) {
-                    jugador.mover(0, 0);
+                    nivel.getJugador().mover(0, 0);
                 }
             }
         });
 
-        iniciarTimers();
+        iniciarTimers(dificultad);
     }
 
-    private void iniciarTimers() {
-        // Lógica general
+    private void iniciarTimers(int dificultad) {
+        // Timer general del juego
         timerJuego = new Timer(1000 / 60, e -> {
             if (!juegoTerminado) {
                 nivel.actualizar();
@@ -80,82 +76,88 @@ public class Juego extends JPanel {
         });
         timerJuego.start();
 
-        // Enemigos
-        timerEnemigos = new Timer(2000, e -> {
-            if (!juegoTerminado) nivel.generarEnemigo();
-        });
+        // Enemigos más frecuentes según dificultad
+        int intervaloEnemigos = Math.max(500, 2000 - dificultad * 300);
+        timerEnemigos = new Timer(intervaloEnemigos, e -> nivel.generarEnemigo());
         timerEnemigos.start();
 
-        // Plantas amistosas
-        timerAmistosas = new Timer(10000, e -> {
-            if (!juegoTerminado) nivel.generarPlantaAmistosa();
-        });
-        timerAmistosas.start();
+        // Plantas amistosas (menos en dificultad alta)
+        int intervaloPlantas = Math.max(3000, 10000 - dificultad * 2000);
+        timerPlantas = new Timer(intervaloPlantas, e -> nivel.generarPlantaAmistosa());
+        timerPlantas.start();
 
-        // Objetos del inventario
-        timerObjetos = new Timer(15000, e -> {
-            if (!juegoTerminado) nivel.generarObjeto();
-        });
+        // Objetos
+        int intervaloObjetos = Math.max(4000, 15000 - dificultad * 2000);
+        timerObjetos = new Timer(intervaloObjetos, e -> nivel.generarObjeto());
         timerObjetos.start();
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-
         if (fondoJuego != null) {
             g.drawImage(fondoJuego, 0, 0, getWidth(), getHeight(), this);
         }
 
         nivel.dibujar(g);
 
-        // Puntaje
+        // UI: Puntaje
         g.setColor(Color.WHITE);
         g.drawString("Puntaje: " + nivel.getPuntaje(), 10, 20);
 
-        // Vida
-        int vida = nivel.getJugador().getVida();
+        // Barra de vida
+        Jugador j = nivel.getJugador();
+        int vida = j.getVida();
+        int vidaMax = j.getVidaMaxima();
+
         g.setColor(Color.GRAY);
         g.fillRect(10, 40, 200, 15);
         g.setColor(Color.GREEN);
-        g.fillRect(10, 40, (int)(200 * (vida / 100.0)), 15);
+        g.fillRect(10, 40, (int)(200 * (vida / (double)vidaMax)), 15);
         g.setColor(Color.WHITE);
         g.drawRect(10, 40, 200, 15);
-        g.drawString("Vida: " + vida, 80, 52);
+        g.drawString("Vida: " + vida + " / " + vidaMax, 80, 53);
 
         // Inventario
         int x = 600;
         int y = 20;
         g.drawString("Inventario:", x, y);
         int i = 1;
-        for (ObjetoInventario obj : nivel.getJugador().getInventario().getObjetos()) {
+        for (ObjetoInventario obj : j.getInventario().getObjetos()) {
             g.drawString(i + ". " + obj.getNombre(), x, y + i * 15);
             i++;
         }
     }
 
     public void finalizarJuego() {
+        juegoTerminado = true;
+
         timerJuego.stop();
         timerEnemigos.stop();
-        timerAmistosas.stop();
+        timerPlantas.stop();
         timerObjetos.stop();
-        juegoTerminado = true;
 
         ArchivoPuntaje.guardarPuntaje(nivel.getPuntaje());
 
         JOptionPane.showMessageDialog(this,
-            "¡Juego terminado!\nPuntaje: " + nivel.getPuntaje(),
-            "Fin del juego", JOptionPane.INFORMATION_MESSAGE);
+                "¡Juego terminado!\nPuntaje: " + nivel.getPuntaje(),
+                "Fin del juego", JOptionPane.INFORMATION_MESSAGE);
 
         JFrame ventana = (JFrame) SwingUtilities.getWindowAncestor(this);
         ventana.dispose();
 
         SwingUtilities.invokeLater(() -> {
             MenuPrincipal menu = new MenuPrincipal();
-            menu.setVisible(true);
+            JFrame nuevaVentana = new JFrame("El Reino de las Plantas Mágicas");
+            nuevaVentana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            nuevaVentana.setContentPane(menu);
+            nuevaVentana.pack();
+            nuevaVentana.setLocationRelativeTo(null);
+            nuevaVentana.setVisible(true);
         });
     }
 }
+
 
 
 

@@ -2,22 +2,19 @@
 package autonoma.ProyectoFinal.models;
 
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.Rectangle;
+import java.awt.Color;
 import java.util.Random;
 import javax.swing.ImageIcon;
-import java.awt.Image;
-import java.awt.Color;
 
-/**
- * Planta enemiga base. Se mueve aleatoriamente en un hilo.
- * Implementa Runnable y sobrescribe método abstracto actualizar().
- */
 public class PlantaCorrupta extends Entidad implements Runnable {
 
     protected int velocidad;
     protected boolean activa;
     protected Random random;
     protected Image imagenPlanta;
+    protected int danioBase = 10;
 
     public PlantaCorrupta(int x, int y, int ancho, int alto) {
         super(x, y, ancho, alto);
@@ -32,9 +29,6 @@ public class PlantaCorrupta extends Entidad implements Runnable {
         }
     }
 
-    /**
-     * Movimiento aleatorio automático de la planta en un hilo.
-     */
     @Override
     public void run() {
         while (activa) {
@@ -43,7 +37,7 @@ public class PlantaCorrupta extends Entidad implements Runnable {
             x += dx * velocidad;
             y += dy * velocidad;
 
-            // Limites
+            // Límites del campo
             if (x < 0) x = 0;
             if (y < 0) y = 0;
             if (x + ancho > 800) x = 800 - ancho;
@@ -57,21 +51,9 @@ public class PlantaCorrupta extends Entidad implements Runnable {
         }
     }
 
-    /**
-     * Método requerido por la clase abstracta Entidad.
-     * En este caso no se usa porque se maneja con hilos.
-     */
     @Override
     public void actualizar() {
-        // Este método está vacío porque se usa run() para el movimiento.
-    }
-
-    public void detener() {
-        activa = false;
-    }
-
-    public boolean estaActiva() {
-        return activa;
+        // no se usa porque el movimiento lo maneja run()
     }
 
     @Override
@@ -84,12 +66,24 @@ public class PlantaCorrupta extends Entidad implements Runnable {
         }
     }
 
+    public void detener() {
+        activa = false;
+    }
+
+    public boolean estaActiva() {
+        return activa;
+    }
+
+    public void setDanioBase(int dificultad) {
+        this.danioBase = 10 + dificultad * 2;
+    }
+
     public int getDanio() {
-        return 10;
+        return danioBase;
     }
 
     public int getPenalizacionPuntaje() {
-        return 0;
+        return 5;
     }
 
     @Override

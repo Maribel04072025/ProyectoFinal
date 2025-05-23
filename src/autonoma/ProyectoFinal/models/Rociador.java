@@ -15,7 +15,7 @@ public class Rociador extends Entidad {
 
     public Rociador(int x, int y, int ancho, int alto) {
         super(x, y, ancho, alto);
-        this.velocidad = 10;
+        this.velocidad = 8;
         this.activo = true;
     }
 
@@ -29,7 +29,7 @@ public class Rociador extends Entidad {
 
     @Override
     public void dibujar(Graphics g) {
-        g.setColor(Color.CYAN);
+        g.setColor(Color.BLUE);
         g.fillRect(x, y, ancho, alto);
     }
 
@@ -38,11 +38,12 @@ public class Rociador extends Entidad {
     }
 
     public void desactivar() {
-        activo = false;
+        this.activo = false;
     }
 
     @Override
     public Rectangle getBounds() {
-        return super.getBounds();
+        return new Rectangle(x, y, ancho, alto);
     }
 }
+
