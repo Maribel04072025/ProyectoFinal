@@ -8,22 +8,29 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 
+/**
+ * Clase que representa al jugador.
+ */
 public class Jugador extends Entidad {
+
     private int velocidad;
     private int direccionX;
     private int direccionY;
     private int puntaje;
     private boolean activo;
     private int vida;
+    private Inventario inventario;
+    private Nivel nivel; // referencia al nivel actual
 
     public Jugador(int x, int y, int ancho, int alto) {
         super(x, y, ancho, alto);
-        this.velocidad = 5;
+        this.velocidad = 7;
         this.direccionX = 0;
         this.direccionY = 0;
         this.puntaje = 0;
         this.activo = true;
         this.vida = 100;
+        this.inventario = new Inventario();
     }
 
     public void mover(int dx, int dy) {
@@ -38,6 +45,7 @@ public class Jugador extends Entidad {
         x += direccionX * velocidad;
         y += direccionY * velocidad;
 
+        // Limitar al área del juego
         if (x < 0) x = 0;
         if (y < 0) y = 0;
         if (x + ancho > 800) x = 800 - ancho;
@@ -88,8 +96,28 @@ public class Jugador extends Entidad {
         direccionY = 0;
     }
 
+    public Inventario getInventario() {
+        return inventario;
+    }
+
+    public int getVelocidad() {
+        return velocidad;
+    }
+
+    public void setVelocidad(int velocidad) {
+        this.velocidad = velocidad;
+    }
+
+    public void setNivel(Nivel nivel) {
+        this.nivel = nivel;
+    }
+
+    public Nivel getNivel() {
+        return nivel;
+    }
+
     @Override
     public Rectangle getBounds() {
-        return super.getBounds();
+        return new Rectangle(x, y, ancho, alto);
     }
 }

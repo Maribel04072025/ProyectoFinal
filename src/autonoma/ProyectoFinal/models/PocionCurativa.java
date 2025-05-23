@@ -7,22 +7,22 @@ package autonoma.ProyectoFinal.models;
 import java.awt.Color;
 import java.awt.Graphics;
 
-public class SemillaRara extends ObjetoInventario {
+public class PocionCurativa extends ObjetoInventario {
 
-    public SemillaRara(int x, int y) {
-        super(x, y, 25, 25, "Semilla Rara");
+    public PocionCurativa(int x, int y) {
+        super(x, y, 25, 25, "Poción Curativa");
     }
 
     @Override
     public void dibujar(Graphics g) {
         if (!recogido) {
-            g.setColor(new Color(0, 150, 0)); // verde oscuro
+            g.setColor(Color.PINK);
             g.fillOval(x, y, ancho, alto);
         }
     }
 
     @Override
     public void aplicarEfecto(Jugador jugador) {
-        jugador.getNivel().eliminarTodosLosEnemigos(); // efecto: mata todo
+        jugador.curar(30); // Restaura 30 de vida
     }
 }

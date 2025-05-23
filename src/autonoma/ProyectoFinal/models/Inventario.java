@@ -4,27 +4,45 @@
  */
 package autonoma.ProyectoFinal.models;
 
-/**
- *
- * @author marib
- */
 import java.util.ArrayList;
+import java.util.List;
 
+/**
+ * Inventario del jugador. Guarda objetos recogidos.
+ */
 public class Inventario {
-    private ArrayList<Objeto> objetos = new ArrayList<>();
 
-    public void agregarObjeto(Objeto o) {
-        objetos.add(o);
+    private List<ObjetoInventario> objetos;
+
+    public Inventario() {
+        objetos = new ArrayList<>();
     }
 
-    public void usarObjeto(int index) {
-        if (index >= 0 && index < objetos.size()) {
-            objetos.get(index).usar();
-            objetos.remove(index);
+    public void agregarObjeto(ObjetoInventario objeto) {
+        objetos.add(objeto);
+    }
+
+    public List<ObjetoInventario> getObjetos() {
+        return objetos;
+    }
+
+    public void usarObjeto(String nombre, Jugador jugador) {
+        for (int i = 0; i < objetos.size(); i++) {
+            ObjetoInventario obj = objetos.get(i);
+            if (obj.getNombre().equals(nombre)) {
+                obj.aplicarEfecto(jugador);
+                objetos.remove(i);
+                break;
+            }
         }
     }
 
-    public ArrayList<Objeto> getObjetos() {
-        return objetos;
+    public boolean tieneObjeto(String nombre) {
+        for (ObjetoInventario obj : objetos) {
+            if (obj.getNombre().equals(nombre)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

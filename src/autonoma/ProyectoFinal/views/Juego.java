@@ -11,8 +11,7 @@ import java.awt.*;
 import java.awt.event.*;
 
 /**
- * Clase que representa el panel principal del juego.
- * Controla dibujo, entrada del jugador, lógica del juego y finalización.
+ * Panel principal del juego.
  */
 public class Juego extends JPanel {
 
@@ -20,6 +19,7 @@ public class Juego extends JPanel {
     private Timer timerJuego;
     private Timer timerEnemigos;
     private Timer timerAmistosas;
+    private Timer timerObjetos;
     private boolean juegoTerminado = false;
     private Image fondoJuego;
 
@@ -48,14 +48,18 @@ public class Juego extends JPanel {
                     case KeyEvent.VK_LEFT -> jugador.mover(-1, 0);
                     case KeyEvent.VK_RIGHT -> jugador.mover(1, 0);
                     case KeyEvent.VK_SPACE -> nivel.disparar();
+                    case KeyEvent.VK_1 -> jugador.getInventario().usarObjeto("Poción Curativa", jugador);
+                    case KeyEvent.VK_2 -> jugador.getInventario().usarObjeto("Semilla Rara", jugador);
+                    case KeyEvent.VK_3 -> jugador.getInventario().usarObjeto("Esencia Mágica", jugador);
                 }
             }
 
             @Override
             public void keyReleased(KeyEvent e) {
                 Jugador jugador = nivel.getJugador();
-                switch (e.getKeyCode()) {
-                    case KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT -> jugador.mover(0, 0);
+                if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN ||
+                    e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT) {
+                    jugador.mover(0, 0);
                 }
             }
         });
@@ -64,15 +68,13 @@ public class Juego extends JPanel {
     }
 
     private void iniciarTimers() {
-        // Timer principal
+        // Lógica general
         timerJuego = new Timer(1000 / 60, e -> {
             if (!juegoTerminado) {
                 nivel.actualizar();
-
                 if (nivel.getJugador().getVida() <= 0) {
                     finalizarJuego();
                 }
-
                 repaint();
             }
         });
@@ -80,75 +82,71 @@ public class Juego extends JPanel {
 
         // Enemigos
         timerEnemigos = new Timer(2000, e -> {
-            if (!juegoTerminado) {
-                nivel.generarEnemigo();
-            }
+            if (!juegoTerminado) nivel.generarEnemigo();
         });
         timerEnemigos.start();
 
         // Plantas amistosas
         timerAmistosas = new Timer(10000, e -> {
-            if (!juegoTerminado) {
-                nivel.generarPlantaAmistosa();
-            }
+            if (!juegoTerminado) nivel.generarPlantaAmistosa();
         });
         timerAmistosas.start();
+
+        // Objetos del inventario
+        timerObjetos = new Timer(15000, e -> {
+            if (!juegoTerminado) nivel.generarObjeto();
+        });
+        timerObjetos.start();
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        // Fondo
         if (fondoJuego != null) {
             g.drawImage(fondoJuego, 0, 0, getWidth(), getHeight(), this);
         }
 
-        // Entidades
         nivel.dibujar(g);
 
         // Puntaje
         g.setColor(Color.WHITE);
         g.drawString("Puntaje: " + nivel.getPuntaje(), 10, 20);
 
-        // Barra de vida
+        // Vida
         int vida = nivel.getJugador().getVida();
-        int barraX = 10;
-        int barraY = 40;
-        int anchoMax = 200;
-        int altoBarra = 15;
-
         g.setColor(Color.GRAY);
-        g.fillRect(barraX, barraY, anchoMax, altoBarra);
-
-        int anchoVida = (int) (anchoMax * (vida / 100.0));
+        g.fillRect(10, 40, 200, 15);
         g.setColor(Color.GREEN);
-        g.fillRect(barraX, barraY, anchoVida, altoBarra);
-
+        g.fillRect(10, 40, (int)(200 * (vida / 100.0)), 15);
         g.setColor(Color.WHITE);
-        g.drawRect(barraX, barraY, anchoMax, altoBarra);
-        g.drawString("Vida: " + vida, barraX + 70, barraY + 12);
+        g.drawRect(10, 40, 200, 15);
+        g.drawString("Vida: " + vida, 80, 52);
+
+        // Inventario
+        int x = 600;
+        int y = 20;
+        g.drawString("Inventario:", x, y);
+        int i = 1;
+        for (ObjetoInventario obj : nivel.getJugador().getInventario().getObjetos()) {
+            g.drawString(i + ". " + obj.getNombre(), x, y + i * 15);
+            i++;
+        }
     }
 
-    /**
-     * Finaliza el juego, guarda puntaje y vuelve al menú principal.
-     */
     public void finalizarJuego() {
-        // Detener timers
         timerJuego.stop();
         timerEnemigos.stop();
         timerAmistosas.stop();
+        timerObjetos.stop();
         juegoTerminado = true;
 
-        // Guardar puntaje
         ArchivoPuntaje.guardarPuntaje(nivel.getPuntaje());
 
-        // Mostrar mensaje
         JOptionPane.showMessageDialog(this,
             "¡Juego terminado!\nPuntaje: " + nivel.getPuntaje(),
             "Fin del juego", JOptionPane.INFORMATION_MESSAGE);
 
-        // Cerrar ventana actual y abrir el menú
         JFrame ventana = (JFrame) SwingUtilities.getWindowAncestor(this);
         ventana.dispose();
 
@@ -158,6 +156,7 @@ public class Juego extends JPanel {
         });
     }
 }
+
 
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
