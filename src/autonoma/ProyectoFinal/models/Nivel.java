@@ -15,6 +15,7 @@ public class Nivel {
     private Jugador jugador;
     private List<PlantaCorrupta> enemigos;
     private List<Rociador> rociadores;
+    private List<PlantaAmistosa> plantasAmistosas;
     private int ancho, alto;
     private int puntaje;
 
@@ -23,6 +24,7 @@ public class Nivel {
         this.alto = alto;
         this.enemigos = new ArrayList<>();
         this.rociadores = new ArrayList<>();
+        this.plantasAmistosas = new ArrayList<>();
         this.puntaje = 0;
         jugador = new Jugador(ancho / 10, alto - 80, 50, 50);
     }
@@ -31,6 +33,7 @@ public class Nivel {
         jugador.dibujar(g);
         for (Rociador r : rociadores) r.dibujar(g);
         for (PlantaCorrupta e : enemigos) e.dibujar(g);
+        for (PlantaAmistosa pa : plantasAmistosas) pa.dibujar(g);
     }
 
     public void actualizar() {
@@ -44,6 +47,8 @@ public class Nivel {
         }
 
         verificarColisiones();
+        verificarRecolectables();
+        verificarDañoEnemigos();
     }
 
     private void verificarColisiones() {
@@ -67,6 +72,28 @@ public class Nivel {
         }
     }
 
+    private void verificarRecolectables() {
+        Iterator<PlantaAmistosa> itPA = plantasAmistosas.iterator();
+        while (itPA.hasNext()) {
+            PlantaAmistosa pa = itPA.next();
+            if (pa.estaActiva() && pa.getBounds().intersects(jugador.getBounds())) {
+                jugador.curar(20);  // 💖 Curar
+                jugador.aumentarPuntaje(10);
+                pa.recolectar();
+                itPA.remove();
+            }
+        }
+    }
+
+    private void verificarDañoEnemigos() {
+        for (PlantaCorrupta enemigo : enemigos) {
+            if (enemigo.getBounds().intersects(jugador.getBounds())) {
+                jugador.recibirDanio(5);  // 💥 Recibe daño
+                break;
+            }
+        }
+    }
+
     public void generarEnemigo() {
         int tipo = (int) (Math.random() * 3);
         PlantaCorrupta enemigo;
@@ -81,6 +108,11 @@ public class Nivel {
 
         enemigos.add(enemigo);
         new Thread(enemigo).start();
+    }
+
+    public void generarPlantaAmistosa() {
+        PlantaAmistosa planta = new PlantaAmistosa((int)(Math.random() * (ancho - 30)), (int)(Math.random() * (alto - 200)), 30, 30);
+        plantasAmistosas.add(planta);
     }
 
     public void disparar() {
