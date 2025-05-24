@@ -4,97 +4,72 @@
  */
 package autonoma.ProyectoFinal.views;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
+import autonoma.ProyectoFinal.models.ArchivoPuntaje;
+
+import javax.swing.*;
+import java.awt.*;
 
 /**
- *
- * @author juane
+ * Menú principal del juego con fondo, récord y botones bien ubicados.
  */
-public class MenuPrincipal extends JFrame {
+public class MenuPrincipal extends JPanel {
+
+    private Image fondo;
 
     public MenuPrincipal() {
-        setTitle("El Reino de las Plantas Mágicas");
-        setSize(600, 400);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-        setResizable(false);
+        setLayout(null);
+        setPreferredSize(new Dimension(9 00, 700));
 
-        // Panel del menú
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setBackground(new Color(34, 139, 34)); // verde bosque
+        // Cargar imagen de fondo
+        try {
+            fondo = new ImageIcon(getClass().getResource("/autonoma/ProyectoFinal/resources/menu_fondo.png")).getImage();
+        } catch (Exception e) {
+            fondo = null;
+        }
 
-        JLabel titulo = new JLabel("El Reino de las Plantas Mágicas");
-        titulo.setAlignmentX(Component.CENTER_ALIGNMENT);
-        titulo.setFont(new Font("Serif", Font.BOLD, 28));
-        titulo.setForeground(Color.WHITE);
-        panel.add(Box.createVerticalStrut(30));
-        panel.add(titulo);
+        int panelAncho = 900;
+        int botonAncho = 200;
+        int xCentro = (panelAncho - botonAncho) / 2;
 
-        JButton btnJugar = new JButton("Iniciar Juego");
-        JButton btnPuntajes = new JButton("Ver Puntajes");
-        JButton btnSalir = new JButton("Salir");
+        // Récord actual
+        int record = ArchivoPuntaje.obtenerPuntajeMaximo();
+        JLabel recordLabel = new JLabel("Récord actual: " + record + " puntos", SwingConstants.CENTER);
+        recordLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        recordLabel.setForeground(Color.WHITE);
+        recordLabel.setBounds(xCentro, 310, botonAncho, 30);
+        add(recordLabel);
 
-        btnJugar.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btnPuntajes.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btnSalir.setAlignmentX(Component.CENTER_ALIGNMENT);
+        // Botón Jugar
+        JButton jugar = new JButton("Jugar");
+        jugar.setBounds(xCentro, 360, botonAncho, 40);
+        add(jugar);
 
-        panel.add(Box.createVerticalStrut(40));
-        panel.add(btnJugar);
-        panel.add(Box.createVerticalStrut(20));
-        panel.add(btnPuntajes);
-        panel.add(Box.createVerticalStrut(20));
-        panel.add(btnSalir);
+        // Botón Salir
+        JButton salir = new JButton("Salir");
+        salir.setBounds(xCentro, 420, botonAncho, 40);
+        add(salir);
 
-        add(panel);
-
-        // Acción del botón Jugar
-        btnJugar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dispose(); // cierra el menú
-                JFrame ventanaJuego = new JFrame("Juego");
-                Juego juego = new Juego();
-                ventanaJuego.add(juego);
-                ventanaJuego.pack();
-                ventanaJuego.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                ventanaJuego.setLocationRelativeTo(null);
-                ventanaJuego.setVisible(true);
-                juego.iniciar();
-            }
+        // Acción botón Jugar
+        jugar.addActionListener(e -> {
+            JFrame ventana = (JFrame) SwingUtilities.getWindowAncestor(this);
+            ventana.setContentPane(new PantallaDificultad(ventana));
+            ventana.revalidate();
         });
 
-        // Acción del botón Ver Puntajes
-        btnPuntajes.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int p = persistencia.ArchivoPuntaje.leerPuntaje();
-                JOptionPane.showMessageDialog(null, "Puntaje máximo: " + p);
-            }
-        });
-
-        // Acción del botón Salir
-        btnSalir.addActionListener(e -> System.exit(0));
+        // Acción botón Salir
+        salir.addActionListener(e -> System.exit(0));
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            MenuPrincipal menu = new MenuPrincipal();
-            menu.setVisible(true);
-        });
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        if (fondo != null) {
+            g.drawImage(fondo, 0, 0, getWidth(), getHeight(), this);
+        }
     }
 }
+
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {

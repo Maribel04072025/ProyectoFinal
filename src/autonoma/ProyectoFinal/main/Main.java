@@ -4,28 +4,40 @@
  */
 package autonoma.ProyectoFinal.main;
 
-import autonoma.ProyectoFinal.views.Juego;
-import javax.swing.JFrame;
+import autonoma.ProyectoFinal.views.MenuPrincipal;
 
+import javax.swing.*;
 
 /**
- *
- * @author marib
+ * Clase principal del proyecto "El Reino de las Plantas Mágicas".
+ * 
+ * Esta clase contiene el método main que inicia la aplicación creando
+ * la ventana principal y mostrando la interfaz gráfica del menú principal.
+ * 
+ * @author TuNombre
+ * @version 20250524
+ * @since 1.0
  */
-
-
-
-
 public class Main {
+
+    /**
+     * Método principal que lanza la aplicación.
+     * 
+     * Utiliza SwingUtilities para asegurar que la creación de la interfaz gráfica
+     * se realice en el hilo de eventos de Swing. Se configura y muestra la ventana
+     * principal de la aplicación con el menú principal.
+     *
+     * @param args Argumentos de la línea de comandos (no se utilizan).
+     */
     public static void main(String[] args) {
-         JFrame ventana = new JFrame("El Reino de las Plantas Mágicas");
-         Juego juego = new Juego();
-         ventana.add(juego);
-         ventana.pack();
-         ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-         ventana.setLocationRelativeTo(null);
-         ventana.setVisible(true);
-         juego.iniciar();
-         
-        }
+        SwingUtilities.invokeLater(() -> {
+            JFrame ventana = new JFrame("El Reino de las Plantas Mágicas");
+            ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            ventana.setContentPane(new MenuPrincipal());
+            ventana.pack();
+            ventana.setResizable(false);
+            ventana.setLocationRelativeTo(null);
+            ventana.setVisible(true);
+        });
     }
+}

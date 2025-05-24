@@ -4,67 +4,229 @@
  */
 package autonoma.ProyectoFinal.models;
 
-import autonoma.ProyectoFinal.interfaces.Dañable;
-import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.*;
+import java.awt.event.KeyEvent;
+import javax.swing.ImageIcon;
 
-public class Jugador extends Entidad implements Dañable {
+/**
+ * Representa al jugador dentro del juego. Puede moverse, recibir daño,
+ * curarse, usar objetos del inventario y ganar puntos.
+ * 
+ * Su comportamiento varía según la dificultad seleccionada al iniciar el juego.
+ * También mantiene una referencia al nivel actual para interactuar con el entorno.
+ * 
+ * @author TuNombre
+ * @version 20250524
+ * @since 1.0
+ * @see Inventario
+ * @see Nivel
+ * @see Entidad
+ */
+public class Jugador extends Entidad {
+
+    private int velocidad;
     private int vida;
-    private Inventario inventario;
+    private int vidaMaxima;
     private int puntaje;
+    private String direccion = "derecha";
+    private Inventario inventario;
+    private Nivel nivel;
 
-    public Jugador(int x, int y) {
-        super(x, y, 40, 40);
-        this.vida = 100;
+    private final int LIMITE_ANCHO = 900;
+    private final int LIMITE_ALTO = 700;
+
+    private Image imagenJugador;
+
+    /**
+     * Constructor del jugador. Inicializa su estado en función de la dificultad.
+     *
+     * @param x         Posición horizontal inicial.
+     * @param y         Posición vertical inicial.
+     * @param ancho     Ancho del jugador.
+     * @param alto      Alto del jugador.
+     * @param dificultad Nivel de dificultad (1: fácil, 2: medio, 3: difícil).
+     */
+    public Jugador(int x, int y, int ancho, int alto, int dificultad) {
+        super(x, y, ancho, alto);
         this.inventario = new Inventario();
         this.puntaje = 0;
+
+        switch (dificultad) {
+            case 1 -> this.vida = this.vidaMaxima = 100;
+            case 2 -> this.vida = this.vidaMaxima = 75;
+            case 3 -> this.vida = this.vidaMaxima = 50;
+        }
+
+        this.velocidad = 5;
+
+        try {
+            imagenJugador = new ImageIcon(getClass().getResource("/autonoma/ProyectoFinal/resources/jugador.png")).getImage();
+        } catch (Exception e) {
+            System.err.println("⚠ Imagen de jugador no encontrada");
+            imagenJugador = null;
+        }
     }
 
+    /**
+     * Método sobrescrito para actualizar el estado del jugador (actualmente vacío).
+     */
+    @Override
+    public void actualizar() {}
+
+    /**
+     * Dibuja al jugador en pantalla, incluyendo una barra de vida sobre su sprite.
+     *
+     * @param g Contexto gráfico usado para dibujar.
+     */
     @Override
     public void dibujar(Graphics g) {
-        g.setColor(Color.GREEN);
-        g.fillRect(x, y, ancho, alto);
+        if (imagenJugador != null) {
+            g.drawImage(imagenJugador, x, y, ancho, alto, null);
+        } else {
+            g.setColor(Color.GREEN);
+            g.fillRect(x, y, ancho, alto);
+        }
+
+        // Barra de vida
+        g.setColor(Color.RED);
+        g.fillRect(x, y - 10, (int)((double)ancho * vida / vidaMaxima), 5);
+        g.setColor(Color.BLACK);
+        g.drawRect(x, y - 10, ancho, 5);
     }
 
-    @Override
-    public void actualizar() {
-        // Movimiento manejado desde el teclado en Juego
-    }
-
+    /**
+     * Mueve al jugador dentro de los límites definidos del mapa.
+     *
+     * @param dx Cantidad de desplazamiento horizontal.
+     * @param dy Cantidad de desplazamiento vertical.
+     */
     public void mover(int dx, int dy) {
         x += dx;
         y += dy;
+
+        if (x < 0) x = 0;
+        if (x + ancho > LIMITE_ANCHO) x = LIMITE_ANCHO - ancho;
+        if (y < 0) y = 0;
+        if (y + alto > LIMITE_ALTO) y = LIMITE_ALTO - alto;
     }
 
-    public void atacar(PlantaCorrupta planta) {
-        planta.recibirDaño(25); // daño fijo por ataque
-        puntaje += 10;
+    /**
+     * Maneja la interacción del jugador con el teclado.
+     *
+     * @param tecla Código de tecla presionada.
+     */
+    public void manejarTeclaPresionada(int tecla) {
+        switch (tecla) {
+            case KeyEvent.VK_UP, KeyEvent.VK_W -> {
+                mover(0, -velocidad);
+                direccion = "arriba";
+            }
+            case KeyEvent.VK_DOWN, KeyEvent.VK_S -> {
+                mover(0, velocidad);
+                direccion = "abajo";
+            }
+            case KeyEvent.VK_LEFT, KeyEvent.VK_A -> {
+                mover(-velocidad, 0);
+                direccion = "izquierda";
+            }
+            case KeyEvent.VK_RIGHT, KeyEvent.VK_D -> {
+                mover(velocidad, 0);
+                direccion = "derecha";
+            }
+            case KeyEvent.VK_1 -> inventario.usarObjeto("Poción Curativa", this);
+            case KeyEvent.VK_2 -> inventario.usarObjeto("Semilla Rara", this);
+            case KeyEvent.VK_3 -> inventario.usarObjeto("Esencia Mágica", this);
+        }
     }
 
-    public void recolectarObjeto(Objeto o) {
-        inventario.agregarObjeto(o);
-    }
-
-    @Override
-    public void recibirDaño(int cantidad) {
+    /**
+     * Reduce la vida del jugador cuando recibe daño.
+     *
+     * @param cantidad Cantidad de daño recibido.
+     */
+    public void recibirDanio(int cantidad) {
         vida -= cantidad;
         if (vida < 0) vida = 0;
     }
 
+    /**
+     * Aumenta la vida del jugador sin exceder el máximo.
+     *
+     * @param cantidad Cantidad de vida a recuperar.
+     */
     public void curar(int cantidad) {
         vida += cantidad;
-        if (vida > 100) vida = 100;
+        if (vida > vidaMaxima) vida = vidaMaxima;
     }
 
-    public int getVida() {
-        return vida;
+    /**
+     * Aumenta el puntaje del jugador. No permite valores negativos.
+     *
+     * @param puntos Cantidad de puntos a sumar.
+     */
+    public void aumentarPuntaje(int puntos) {
+        puntaje += puntos;
+        if (puntaje < 0) puntaje = 0;
     }
 
-    public int getPuntaje() {
-        return puntaje;
+    /**
+     * Obtiene el área rectangular ocupada por el jugador, útil para colisiones.
+     *
+     * @return Un objeto Rectangle con los límites del jugador.
+     */
+    @Override
+    public Rectangle getBounds() {
+        return new Rectangle(x, y, ancho, alto);
     }
 
-    public Inventario getInventario() {
-        return inventario;
-    }
+    // Getters y Setters
+
+    /**
+     * @return Vida actual del jugador.
+     */
+    public int getVida() { return vida; }
+
+    /**
+     * @return Vida máxima del jugador.
+     */
+    public int getVidaMaxima() { return vidaMaxima; }
+
+    /**
+     * @return Puntaje actual del jugador.
+     */
+    public int getPuntaje() { return puntaje; }
+
+    /**
+     * @return Inventario del jugador.
+     */
+    public Inventario getInventario() { return inventario; }
+
+    /**
+     * @return Dirección actual del movimiento del jugador.
+     */
+    public String getDireccion() { return direccion; }
+
+    /**
+     * @return Nivel actual del juego en el que se encuentra el jugador.
+     */
+    public Nivel getNivel() { return nivel; }
+
+    /**
+     * Asigna el nivel al que pertenece el jugador.
+     *
+     * @param nivel Nivel actual del juego.
+     */
+    public void setNivel(Nivel nivel) { this.nivel = nivel; }
+
+    /**
+     * @return Velocidad actual del jugador.
+     */
+    public int getVelocidad() { return velocidad; }
+
+    /**
+     * Asigna la velocidad del jugador.
+     *
+     * @param velocidad Nueva velocidad.
+     */
+    public void setVelocidad(int velocidad) { this.velocidad = velocidad; }
 }

@@ -4,94 +4,170 @@
  */
 package autonoma.ProyectoFinal.views;
 
-import autonoma.ProyectoFinal.models.Entidad;
+import autonoma.ProyectoFinal.models.ArchivoPuntaje;
+import autonoma.ProyectoFinal.models.Jugador;
+import autonoma.ProyectoFinal.models.Nivel;
+import autonoma.ProyectoFinal.models.ReproductorMusica;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Random;
 
-public class Juego extends JPanel implements KeyListener {
+public class Juego extends JPanel {
 
-    private ArrayList<Entidad> entidades;
-    private PlantaJugador jugador;
-    private Timer timer;
-    private int puntaje = 0;
-    private Random random = new Random();
+    private Nivel nivel;
+    private Timer timerActualizar;
+    private Timer timerEnemigos;
+    private Timer timerAmistosas;
+    private Timer timerObjetos;
+    private boolean enPausa = false;
+    private ReproductorMusica musicaFondo;
 
-    public Juego() {
-        setPreferredSize(new Dimension(800, 600));
-        setBackground(new Color(200, 255, 200));
-        setFocusable(true);
-        addKeyListener(this);
+    private Image fondo;
+    private int dificultad;
 
-        entidades = new ArrayList<>();
+    public Juego(int dificultad) {
+        this.dificultad = dificultad;
+        this.setPreferredSize(new Dimension(900, 700));
+        this.setLayout(null);
+        this.setFocusable(true);
+        this.requestFocusInWindow(); // Importante para capturar teclado
+        musicaFondo = new ReproductorMusica();
+        musicaFondo.reproducirMusica("/autonoma/ProyectoFinal/musica/MusicaFondo.wav", true);
 
-        jugador = new PlantaJugador(400, 500);
-        entidades.add(jugador);
+        try {
+            fondo = new ImageIcon(getClass().getResource("/autonoma/ProyectoFinal/resources/fondo_juego.png")).getImage();
+        } catch (Exception e) {
+            System.err.println("⚠ Fondo no encontrado");
+            fondo = null;
+        }
 
-        // Bucle del juego
-        timer = new Timer(30, e -> {
-            actualizar();
-            repaint();
-        });
-        timer.start();
+        nivel = new Nivel(1000, 700, dificultad);
+
+        iniciarTimers();
+        manejarEventosTeclado();
     }
 
-    private void actualizar() {
-        Iterator<Entidad> it = entidades.iterator();
-        while (it.hasNext()) {
-            Entidad e = it.next();
-            e.actualizar();
-
-            if (e != jugador && jugador.getBounds().intersects(e.getBounds())) {
-                puntaje += e.getPuntos();
-                it.remove();
+    private void iniciarTimers() {
+        timerActualizar = new Timer(30, e -> {
+            if (!enPausa) {
+                nivel.actualizar();
             }
-
-            if (e.getY() > getHeight()) {
-                it.remove();
+            if (nivel.getJugador().getVida() <= 0) {
+                finalizarJuego();
             }
-        }
+            repaint();
+        });
+        timerActualizar.start();
 
-        if (random.nextDouble() < 0.02) {
-            entidades.add(new HiedraVenenosa(random.nextInt(760), -40));
-        }
-        if (random.nextDouble() < 0.015) {
-            entidades.add(new FlorCarnivora(random.nextInt(760), -40));
-        }
-        if (random.nextDouble() < 0.01) {
-            entidades.add(new PlantaAmistosa(random.nextInt(760), -40));
-        }
+        timerEnemigos = new Timer(getTiempoEnemigos(), e -> nivel.generarEnemigo());
+        timerEnemigos.start();
+
+        timerAmistosas = new Timer(10000, e -> nivel.generarPlantaAmistosa());
+        timerAmistosas.start();
+
+        timerObjetos = new Timer(12000, e -> nivel.generarObjeto());
+        timerObjetos.start();
+    }
+
+    private int getTiempoEnemigos() {
+        return switch (dificultad) {
+            case 1 -> 4000;
+            case 2 -> 2500;
+            default -> 1500;
+        };
+    }
+
+    private void manejarEventosTeclado() {
+        addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                    enPausa = !enPausa;
+                    repaint();
+                } else if (enPausa && e.getKeyCode() == KeyEvent.VK_S) {
+                    finalizarJuego();
+                } else if (!enPausa) {
+                    Jugador j = nivel.getJugador();  // Solo accede al jugador si el juego no está en pausa
+                    j.manejarTeclaPresionada(e.getKeyCode());
+
+                    if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+                        nivel.disparar();
+                    }
+                }
+            }
+        });
+
+        // Necesario para asegurar que reciba eventos del teclado
+        this.setFocusable(true);
+        this.requestFocusInWindow();
+    }
+
+    private void finalizarJuego() {
+        timerActualizar.stop();
+        timerEnemigos.stop();
+        timerAmistosas.stop();
+        timerObjetos.stop();
+
+        int puntaje = nivel.getPuntaje();
+        ArchivoPuntaje.guardarPuntaje(puntaje);
+
+        JOptionPane.showMessageDialog(this, "¡Has perdido!\nPuntaje: " + puntaje);
+
+        JFrame ventana = (JFrame) SwingUtilities.getWindowAncestor(this);
+        ventana.dispose();
+
+        JFrame menu = new JFrame("Menú");
+        menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        menu.setContentPane(new MenuPrincipal());
+        menu.pack();
+        menu.setLocationRelativeTo(null);
+        menu.setVisible(true);
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        for (Entidad e : entidades) {
-            e.dibujar(g);
+        // Fondo
+        if (fondo != null) {
+            g.drawImage(fondo, 0, 0, getWidth(), getHeight(), this);
         }
 
-        g.setColor(Color.BLACK);
-        g.setFont(new Font("Arial", Font.BOLD, 16));
-        g.drawString("Puntaje: " + puntaje, 10, 20);
-    }
+        // Dibujo general del nivel
+        nivel.dibujar(g);
 
-    @Override
-    public void keyPressed(KeyEvent e) {
-        int tecla = e.getKeyCode();
-        if (tecla == KeyEvent.VK_LEFT) jugador.mover(-10, 0);
-        if (tecla == KeyEvent.VK_RIGHT) jugador.mover(10, 0);
-        if (tecla == KeyEvent.VK_UP) jugador.mover(0, -10);
-        if (tecla == KeyEvent.VK_DOWN) jugador.mover(0, 10);
-    }
+        // Inventario (horizontal, superior derecha)
+        nivel.getJugador().getInventario().dibujar(g);
 
-    @Override public void keyReleased(KeyEvent e) {}
-    @Override public void keyTyped(KeyEvent e) {}
+        // Barra de vida abajo
+        Jugador j = nivel.getJugador();
+        int vida = j.getVida();
+        int vidaMax = j.getVidaMaxima();
+
+        g.setColor(Color.GRAY);
+        g.fillRect(10, 650, 200, 20);
+        g.setColor(Color.GREEN);
+        g.fillRect(10, 650, (int)(200 * (vida / (double)vidaMax)), 20);
+        g.setColor(Color.WHITE);
+        g.drawRect(10, 650, 200, 20);
+        g.drawString("Vida: " + vida + " / " + vidaMax, 75, 665);
+    if (enPausa) {
+        g.setColor(new Color(0, 0, 0, 150)); // semitransparente
+        g.fillRect(0, 0, getWidth(), getHeight());
+
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("Arial", Font.BOLD, 24));
+        g.drawString("JUEGO EN PAUSA", getWidth() / 2 - 100, getHeight() / 2 - 20);
+        g.setFont(new Font("Arial", Font.PLAIN, 18));
+        g.drawString("Presiona ESC para continuar", getWidth() / 2 - 110, getHeight() / 2 + 10);
+        g.drawString("Presiona S para salir al menú", getWidth() / 2 - 120, getHeight() / 2 + 40);
 }
-    @SuppressWarnings("unchecked")
+    }
+}
+    
+
+
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
