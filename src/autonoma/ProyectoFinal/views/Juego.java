@@ -7,6 +7,7 @@ package autonoma.ProyectoFinal.views;
 import autonoma.ProyectoFinal.models.ArchivoPuntaje;
 import autonoma.ProyectoFinal.models.Jugador;
 import autonoma.ProyectoFinal.models.Nivel;
+import autonoma.ProyectoFinal.models.ReproductorMusica;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,6 +20,8 @@ public class Juego extends JPanel {
     private Timer timerEnemigos;
     private Timer timerAmistosas;
     private Timer timerObjetos;
+    private boolean enPausa = false;
+    private ReproductorMusica musicaFondo;
 
     private Image fondo;
     private int dificultad;
@@ -29,6 +32,8 @@ public class Juego extends JPanel {
         this.setLayout(null);
         this.setFocusable(true);
         this.requestFocusInWindow(); // Importante para capturar teclado
+        musicaFondo = new ReproductorMusica();
+        musicaFondo.reproducirMusica("/autonoma/ProyectoFinal/musica/MusicaFondo.wav", true);
 
         try {
             fondo = new ImageIcon(getClass().getResource("/autonoma/ProyectoFinal/resources/fondo_juego.png")).getImage();
@@ -45,7 +50,9 @@ public class Juego extends JPanel {
 
     private void iniciarTimers() {
         timerActualizar = new Timer(30, e -> {
-            nivel.actualizar();
+            if (!enPausa) {
+                nivel.actualizar();
+            }
             if (nivel.getJugador().getVida() <= 0) {
                 finalizarJuego();
             }
@@ -75,11 +82,18 @@ public class Juego extends JPanel {
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                Jugador j = nivel.getJugador();
-                j.manejarTeclaPresionada(e.getKeyCode());
+                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                    enPausa = !enPausa;
+                    repaint();
+                } else if (enPausa && e.getKeyCode() == KeyEvent.VK_S) {
+                    finalizarJuego();
+                } else if (!enPausa) {
+                    Jugador j = nivel.getJugador();  // Solo accede al jugador si el juego no está en pausa
+                    j.manejarTeclaPresionada(e.getKeyCode());
 
-                if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-                    nivel.disparar();
+                    if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+                        nivel.disparar();
+                    }
                 }
             }
         });
@@ -138,6 +152,17 @@ public class Juego extends JPanel {
         g.setColor(Color.WHITE);
         g.drawRect(10, 650, 200, 20);
         g.drawString("Vida: " + vida + " / " + vidaMax, 75, 665);
+    if (enPausa) {
+        g.setColor(new Color(0, 0, 0, 150)); // semitransparente
+        g.fillRect(0, 0, getWidth(), getHeight());
+
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("Arial", Font.BOLD, 24));
+        g.drawString("JUEGO EN PAUSA", getWidth() / 2 - 100, getHeight() / 2 - 20);
+        g.setFont(new Font("Arial", Font.PLAIN, 18));
+        g.drawString("Presiona ESC para continuar", getWidth() / 2 - 110, getHeight() / 2 + 10);
+        g.drawString("Presiona S para salir al menú", getWidth() / 2 - 120, getHeight() / 2 + 40);
+}
     }
 }
     
