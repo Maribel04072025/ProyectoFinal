@@ -10,7 +10,7 @@ package autonoma.ProyectoFinal.models;
  * Esta clase define el método abstracto {@code usar}, que debe ser implementado
  * por todas las subclases para definir el comportamiento específico al usar el objeto.
  * 
- * @author marib
+ * @author Juan Esteban Hernandez
  * @version 1.0
  * @since 2025-05-24
  */

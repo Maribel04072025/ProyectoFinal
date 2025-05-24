@@ -17,7 +17,7 @@ import java.awt.Rectangle;
  * Esta clase sirve como punto de partida para representar cualquier
  * objeto interactivo en el juego, como plantas, enemigos, obstáculos, etc.
  * 
- * @author TuNombre
+ * @author Maribel Ceballos 
  * @version 20250524
  * @since 1.0
  */

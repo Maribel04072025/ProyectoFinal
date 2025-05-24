@@ -17,7 +17,7 @@ import java.util.Map;
  * 
  * Este componente permite agregar, usar y visualizar gráficamente los objetos del jugador.
  * 
- * @author TuNombre
+ * @author Juan Esteban Hernandez
  * @version 20250524
  * @since 1.0
  * @see ObjetoInventario

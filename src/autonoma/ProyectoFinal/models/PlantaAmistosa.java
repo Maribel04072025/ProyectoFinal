@@ -18,7 +18,7 @@ import java.awt.Rectangle;
  * La planta intenta cargar una imagen para su representación gráfica, y si no está disponible,
  * se dibuja un óvalo amarillo como representación alternativa.
  * 
- * @author marib
+ * @author Juan Jacobo Cañas 
  * @version 1.0
  * @since 2025-05-24
  */

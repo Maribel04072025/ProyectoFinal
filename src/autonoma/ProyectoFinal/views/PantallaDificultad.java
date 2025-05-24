@@ -7,17 +7,35 @@ package autonoma.ProyectoFinal.views;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Clase que representa la pantalla de selección de dificultad del juego.
+ * 
+ * Esta pantalla permite al jugador elegir entre tres niveles de dificultad:
+ * Fácil, Media o Difícil. Al seleccionar una opción, se inicia el juego
+ * correspondiente con ese nivel de dificultad. También muestra un fondo de imagen.
+ * 
+ * Esta clase es parte de la vista (interfaz gráfica) del proyecto.
+ * 
+ * @author Juan Esteban Hernandez
+ * @version 1.0
+ * @since 2025-05-24
+ */
 public class PantallaDificultad extends JPanel {
 
     private Image fondo;
     private JFrame ventana;
 
+    /**
+     * Constructor que configura los botones de dificultad y el fondo gráfico.
+     *
+     * @param ventana la ventana principal donde se mostrará el juego
+     */
     public PantallaDificultad(JFrame ventana) {
         this.ventana = ventana;
         setLayout(null);
         setPreferredSize(new Dimension(900, 700));
 
-        // Fondo
+        // Cargar imagen de fondo
         try {
             fondo = new ImageIcon(getClass().getResource("/autonoma/ProyectoFinal/resources/menu_fondo.png")).getImage();
         } catch (Exception e) {
@@ -28,27 +46,32 @@ public class PantallaDificultad extends JPanel {
         int botonAncho = 200;
         int xCentro = (panelAncho - botonAncho) / 2;
 
-        // Botón Fácil
+        // Botón para dificultad fácil
         JButton facil = new JButton("Fácil");
         facil.setBounds(xCentro, 300, botonAncho, 40);
         add(facil);
 
-        // Botón Media
+        // Botón para dificultad media
         JButton media = new JButton("Media");
         media.setBounds(xCentro, 370, botonAncho, 40);
         add(media);
 
-        // Botón Difícil
+        // Botón para dificultad difícil
         JButton dificil = new JButton("Difícil");
         dificil.setBounds(xCentro, 440, botonAncho, 40);
         add(dificil);
 
-        // Acciones
+        // Acciones asociadas a cada botón
         facil.addActionListener(e -> iniciarJuego(1));
         media.addActionListener(e -> iniciarJuego(2));
         dificil.addActionListener(e -> iniciarJuego(3));
     }
 
+    /**
+     * Inicia el juego con el nivel de dificultad especificado.
+     *
+     * @param dificultad 1 para Fácil, 2 para Media, 3 para Difícil
+     */
     private void iniciarJuego(int dificultad) {
         Juego juego = new Juego(dificultad);
         ventana.setContentPane(juego);
@@ -57,10 +80,15 @@ public class PantallaDificultad extends JPanel {
         ventana.setLocationRelativeTo(null);
         ventana.setVisible(true);
 
-        // 🔥 Esto permite que el panel `Juego` reciba las teclas
+        // Asegura que el panel de juego reciba el enfoque de teclado
         juego.requestFocusInWindow();
     }
 
+    /**
+     * Dibuja el fondo de la pantalla si está disponible.
+     *
+     * @param g el contexto gráfico utilizado para pintar
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -69,7 +97,6 @@ public class PantallaDificultad extends JPanel {
         }
     }
 }
-
 
 
 

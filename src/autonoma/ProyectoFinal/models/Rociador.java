@@ -17,7 +17,7 @@ import java.awt.Rectangle;
  * 
  * Movimiento controlado por actualización de posición en cada ciclo.
  * 
- * @author marib
+ * @author maribel Ceballos 
  * @version 1.0
  * @since 2025-05-24
  */

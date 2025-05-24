@@ -16,7 +16,7 @@ import java.awt.Rectangle;
  * Las subclases deben implementar el método {@code aplicarEfecto} para definir la funcionalidad específica.
  * También pueden sobrescribir el método {@code dibujar} para mostrar una imagen personalizada.
  * 
- * @author marib
+ * @author Juan Esteban Hernandez
  * @version 1.0
  * @since 2025-05-24
  */

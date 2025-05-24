@@ -15,7 +15,7 @@ import java.awt.Image;
  * {@link PlantaCorrupta}. Su funcionalidad principal es visualizarse
  * como un cactus explosivo dentro del entorno gráfico del juego.
  * 
- * @author TuNombre
+ * @author Mariibel Ceballos
  * @version 20250524
  * @since 1.0
  * @see PlantaCorrupta

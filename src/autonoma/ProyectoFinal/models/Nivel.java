@@ -19,7 +19,7 @@ import java.util.List;
  * - Recolectar objetos o plantas.
  * - Gestionar el puntaje y daño recibido.
  * 
- * @author TuNombre
+ * @author Juan Esteban Hernandez
  * @version 20250524
  * @since 1.0
  */

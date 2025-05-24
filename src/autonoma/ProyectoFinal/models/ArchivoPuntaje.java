@@ -14,7 +14,7 @@ import java.io.*;
  * 
  * El archivo utilizado para almacenar el puntaje es "puntaje_maximo.txt".
  * 
- * @author TuNombre
+ * @author Maribel Ceballos 
  * @version 20250524
  * @since 1.0
  */

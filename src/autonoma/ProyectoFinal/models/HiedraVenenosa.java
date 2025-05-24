@@ -14,7 +14,7 @@ import java.awt.Image;
  * Esta clase extiende de {@link PlantaCorrupta} y carga su imagen específica
  * desde los recursos del proyecto. La funcionalidad de dibujo es heredada.
  * 
- * @author TuNombre
+ * @author Maribel Ceballos 
  * @version 20250524
  * @since 1.0
  * @see PlantaCorrupta

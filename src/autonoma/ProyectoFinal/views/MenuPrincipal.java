@@ -10,15 +10,28 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * Menú principal del juego con fondo, récord y botones bien ubicados.
+ * Clase que representa el menú principal del juego.
+ * 
+ * Este menú se muestra al inicio del juego y permite al jugador ver el récord actual,
+ * comenzar una nueva partida o salir de la aplicación. También se encarga de mostrar
+ * un fondo personalizado para una mejor experiencia visual.
+ * 
+ * Los botones están centrados y bien distribuidos visualmente.
+ * 
+ * @author Juan Jacobo Cañas 
+ * @version 1.0
+ * @since 2025-05-24
  */
 public class MenuPrincipal extends JPanel {
 
     private Image fondo;
 
+    /**
+     * Constructor que inicializa el menú principal, carga el fondo, el récord actual y los botones.
+     */
     public MenuPrincipal() {
         setLayout(null);
-        setPreferredSize(new Dimension(9 00, 700));
+        setPreferredSize(new Dimension(900, 700));
 
         // Cargar imagen de fondo
         try {
@@ -31,7 +44,7 @@ public class MenuPrincipal extends JPanel {
         int botonAncho = 200;
         int xCentro = (panelAncho - botonAncho) / 2;
 
-        // Récord actual
+        // Mostrar el récord actual del jugador
         int record = ArchivoPuntaje.obtenerPuntajeMaximo();
         JLabel recordLabel = new JLabel("Récord actual: " + record + " puntos", SwingConstants.CENTER);
         recordLabel.setFont(new Font("Arial", Font.BOLD, 16));
@@ -39,27 +52,32 @@ public class MenuPrincipal extends JPanel {
         recordLabel.setBounds(xCentro, 310, botonAncho, 30);
         add(recordLabel);
 
-        // Botón Jugar
+        // Botón para iniciar el juego
         JButton jugar = new JButton("Jugar");
         jugar.setBounds(xCentro, 360, botonAncho, 40);
         add(jugar);
 
-        // Botón Salir
+        // Botón para salir del juego
         JButton salir = new JButton("Salir");
         salir.setBounds(xCentro, 420, botonAncho, 40);
         add(salir);
 
-        // Acción botón Jugar
+        // Acción del botón Jugar: cambia a la pantalla de selección de dificultad
         jugar.addActionListener(e -> {
             JFrame ventana = (JFrame) SwingUtilities.getWindowAncestor(this);
             ventana.setContentPane(new PantallaDificultad(ventana));
             ventana.revalidate();
         });
 
-        // Acción botón Salir
+        // Acción del botón Salir: cierra el programa
         salir.addActionListener(e -> System.exit(0));
     }
 
+    /**
+     * Dibuja el fondo del menú si está disponible.
+     *
+     * @param g el contexto gráfico utilizado para pintar
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -68,7 +86,6 @@ public class MenuPrincipal extends JPanel {
         }
     }
 }
-
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

@@ -17,7 +17,7 @@ import javax.swing.ImageIcon;
  * 
  * Implementa la interfaz {@link Runnable} para manejar su movimiento en un hilo independiente.
  * 
- * @author marib
+ * @author Juan Jacobo Cañas 
  * @version 1.0
  * @since 2025-05-24
  */

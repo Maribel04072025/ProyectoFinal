@@ -15,7 +15,7 @@ import java.awt.*;
  * 
  * Extiende {@link ObjetoInventario} para ser parte del inventario y poder ser dibujada y recogida.
  * 
- * @author marib
+ * @author Juan Jacobo Cañas 
  * @version 1.0
  * @since 2025-05-24
  */

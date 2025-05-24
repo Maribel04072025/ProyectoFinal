@@ -15,7 +15,7 @@ import javax.swing.ImageIcon;
  * Su comportamiento varía según la dificultad seleccionada al iniciar el juego.
  * También mantiene una referencia al nivel actual para interactuar con el entorno.
  * 
- * @author TuNombre
+ * @author Juan Esteban Hernandez
  * @version 20250524
  * @since 1.0
  * @see Inventario

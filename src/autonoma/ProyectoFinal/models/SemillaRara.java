@@ -15,7 +15,7 @@ import java.awt.*;
  * 
  * Se dibuja con una imagen específica o un círculo magenta si la imagen no está disponible.
  * 
- * @author marib
+ * @author Juan Jacobo Cañas 
  * @version 1.0
  * @since 2025-05-24
  */

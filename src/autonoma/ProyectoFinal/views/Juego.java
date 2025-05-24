@@ -13,6 +13,15 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
+/**
+ * Clase que representa el panel principal del juego donde se visualiza y ejecuta la lógica del mismo.
+ * Contiene el nivel actual, los bucles de actualización, generación de enemigos, objetos e interfaz gráfica.
+ * También gestiona la pausa del juego y la finalización del mismo.
+ * 
+ * @author maribel ceballos 
+ * @version 1.0
+ * @since 2025-05-24
+ */
 public class Juego extends JPanel {
 
     private Nivel nivel;
@@ -22,16 +31,21 @@ public class Juego extends JPanel {
     private Timer timerObjetos;
     private boolean enPausa = false;
     private ReproductorMusica musicaFondo;
-
     private Image fondo;
     private int dificultad;
 
+    /**
+     * Constructor que inicializa el panel del juego con una dificultad específica.
+     * 
+     * @param dificultad nivel de dificultad (1 = fácil, 2 = medio, 3 = difícil)
+     */
     public Juego(int dificultad) {
         this.dificultad = dificultad;
         this.setPreferredSize(new Dimension(900, 700));
         this.setLayout(null);
         this.setFocusable(true);
-        this.requestFocusInWindow(); // Importante para capturar teclado
+        this.requestFocusInWindow();
+
         musicaFondo = new ReproductorMusica();
         musicaFondo.reproducirMusica("/autonoma/ProyectoFinal/musica/MusicaFondo.wav", true);
 
@@ -48,6 +62,9 @@ public class Juego extends JPanel {
         manejarEventosTeclado();
     }
 
+    /**
+     * Inicia los temporizadores que controlan la lógica del juego: actualización, enemigos, plantas amistosas y objetos.
+     */
     private void iniciarTimers() {
         timerActualizar = new Timer(30, e -> {
             if (!enPausa) {
@@ -70,6 +87,11 @@ public class Juego extends JPanel {
         timerObjetos.start();
     }
 
+    /**
+     * Determina el tiempo de aparición de enemigos según la dificultad.
+     * 
+     * @return tiempo en milisegundos
+     */
     private int getTiempoEnemigos() {
         return switch (dificultad) {
             case 1 -> 4000;
@@ -78,6 +100,9 @@ public class Juego extends JPanel {
         };
     }
 
+    /**
+     * Configura los eventos de teclado para pausar el juego, salir o controlar al jugador.
+     */
     private void manejarEventosTeclado() {
         addKeyListener(new KeyAdapter() {
             @Override
@@ -88,7 +113,7 @@ public class Juego extends JPanel {
                 } else if (enPausa && e.getKeyCode() == KeyEvent.VK_S) {
                     finalizarJuego();
                 } else if (!enPausa) {
-                    Jugador j = nivel.getJugador();  // Solo accede al jugador si el juego no está en pausa
+                    Jugador j = nivel.getJugador();
                     j.manejarTeclaPresionada(e.getKeyCode());
 
                     if (e.getKeyCode() == KeyEvent.VK_SPACE) {
@@ -98,11 +123,14 @@ public class Juego extends JPanel {
             }
         });
 
-        // Necesario para asegurar que reciba eventos del teclado
         this.setFocusable(true);
         this.requestFocusInWindow();
     }
 
+    /**
+     * Finaliza el juego actual, detiene los timers y muestra el puntaje del jugador.
+     * Luego vuelve al menú principal.
+     */
     private void finalizarJuego() {
         timerActualizar.stop();
         timerEnemigos.stop();
@@ -125,26 +153,27 @@ public class Juego extends JPanel {
         menu.setVisible(true);
     }
 
+    /**
+     * Método que se llama automáticamente para pintar el componente en pantalla.
+     * 
+     * @param g el objeto Graphics con el cual se dibuja
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        // Fondo
         if (fondo != null) {
             g.drawImage(fondo, 0, 0, getWidth(), getHeight(), this);
         }
 
-        // Dibujo general del nivel
         nivel.dibujar(g);
-
-        // Inventario (horizontal, superior derecha)
         nivel.getJugador().getInventario().dibujar(g);
 
-        // Barra de vida abajo
         Jugador j = nivel.getJugador();
         int vida = j.getVida();
         int vidaMax = j.getVidaMaxima();
 
+        // Barra de vida
         g.setColor(Color.GRAY);
         g.fillRect(10, 650, 200, 20);
         g.setColor(Color.GREEN);
@@ -152,20 +181,21 @@ public class Juego extends JPanel {
         g.setColor(Color.WHITE);
         g.drawRect(10, 650, 200, 20);
         g.drawString("Vida: " + vida + " / " + vidaMax, 75, 665);
-    if (enPausa) {
-        g.setColor(new Color(0, 0, 0, 150)); // semitransparente
-        g.fillRect(0, 0, getWidth(), getHeight());
 
-        g.setColor(Color.WHITE);
-        g.setFont(new Font("Arial", Font.BOLD, 24));
-        g.drawString("JUEGO EN PAUSA", getWidth() / 2 - 100, getHeight() / 2 - 20);
-        g.setFont(new Font("Arial", Font.PLAIN, 18));
-        g.drawString("Presiona ESC para continuar", getWidth() / 2 - 110, getHeight() / 2 + 10);
-        g.drawString("Presiona S para salir al menú", getWidth() / 2 - 120, getHeight() / 2 + 40);
-}
+        // Modo pausa
+        if (enPausa) {
+            g.setColor(new Color(0, 0, 0, 150));
+            g.fillRect(0, 0, getWidth(), getHeight());
+
+            g.setColor(Color.WHITE);
+            g.setFont(new Font("Arial", Font.BOLD, 24));
+            g.drawString("JUEGO EN PAUSA", getWidth() / 2 - 100, getHeight() / 2 - 20);
+            g.setFont(new Font("Arial", Font.PLAIN, 18));
+            g.drawString("Presiona ESC para continuar", getWidth() / 2 - 110, getHeight() / 2 + 10);
+            g.drawString("Presiona S para salir al menú", getWidth() / 2 - 120, getHeight() / 2 + 40);
+        }
     }
-}
-    
+}  
 
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
