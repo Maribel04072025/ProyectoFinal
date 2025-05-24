@@ -4,23 +4,22 @@
  */
 package autonoma.ProyectoFinal.models;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import javax.swing.Timer;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import javax.swing.*;
+import java.awt.*;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class EsenciaMagica extends ObjetoInventario {
 
-    public EsenciaMagica(int x, int y) {
-        super(x, y, 25, 25, "Esencia Mágica");
-    }
+    private Image imagen;
 
-    @Override
-    public void dibujar(Graphics g) {
-        if (!recogido) {
-            g.setColor(Color.CYAN);
-            g.fillOval(x, y, ancho, alto);
+    public EsenciaMagica(int x, int y) {
+        super(x, y, 32, 32, "Esencia Mágica");
+
+        try {
+            imagen = new ImageIcon(getClass().getResource("/autonoma/ProyectoFinal/resources/esencia_magica.png")).getImage();
+        } catch (Exception e) {
+            imagen = null;
         }
     }
 
@@ -29,12 +28,27 @@ public class EsenciaMagica extends ObjetoInventario {
         int velocidadOriginal = jugador.getVelocidad();
         jugador.setVelocidad(velocidadOriginal + 3);
 
-        new Timer(30000, new ActionListener() {
+        // Regresar velocidad en 30 segundos
+        new Timer().schedule(new TimerTask() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void run() {
                 jugador.setVelocidad(velocidadOriginal);
-                ((Timer) e.getSource()).stop();
             }
-        }).start();
+        }, 30000);
+    }
+
+    @Override
+    public void dibujar(Graphics g) {
+        if (imagen != null) {
+            g.drawImage(imagen, getX(), getY(), getAncho(), getAlto(), null);
+        } else {
+            g.setColor(Color.CYAN);
+            g.fillOval(getX(), getY(), getAncho(), getAlto());
+        }
+    }
+
+    @Override
+    public Rectangle getBounds() {
+        return new Rectangle(getX(), getY(), getAncho(), getAlto());
     }
 }

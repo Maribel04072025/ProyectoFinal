@@ -18,7 +18,7 @@ public class MenuPrincipal extends JPanel {
 
     public MenuPrincipal() {
         setLayout(null);
-        setPreferredSize(new Dimension(800, 600));
+        setPreferredSize(new Dimension(900, 700));
 
         // Cargar imagen de fondo
         try {
@@ -27,22 +27,26 @@ public class MenuPrincipal extends JPanel {
             fondo = null;
         }
 
-        // Récord actual, más abajo para no tapar el título
+        int panelAncho = 900;
+        int botonAncho = 200;
+        int xCentro = (panelAncho - botonAncho) / 2;
+
+        // Récord actual
         int record = ArchivoPuntaje.obtenerPuntajeMaximo();
         JLabel recordLabel = new JLabel("Récord actual: " + record + " puntos", SwingConstants.CENTER);
         recordLabel.setFont(new Font("Arial", Font.BOLD, 16));
         recordLabel.setForeground(Color.WHITE);
-        recordLabel.setBounds(250, 210, 300, 30);
+        recordLabel.setBounds(xCentro, 310, botonAncho, 30);
         add(recordLabel);
 
         // Botón Jugar
         JButton jugar = new JButton("Jugar");
-        jugar.setBounds(300, 260, 200, 40);
+        jugar.setBounds(xCentro, 360, botonAncho, 40);
         add(jugar);
 
         // Botón Salir
         JButton salir = new JButton("Salir");
-        salir.setBounds(300, 320, 200, 40);
+        salir.setBounds(xCentro, 420, botonAncho, 40);
         add(salir);
 
         // Acción botón Jugar
@@ -60,7 +64,7 @@ public class MenuPrincipal extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         if (fondo != null) {
-            g.drawImage(fondo, 0, 0, getWidth(), getHeight(), this); // Escala a tamaño panel
+            g.drawImage(fondo, 0, 0, getWidth(), getHeight(), this);
         }
     }
 }

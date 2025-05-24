@@ -4,25 +4,43 @@
  */
 package autonoma.ProyectoFinal.models;
 
-import java.awt.Color;
-import java.awt.Graphics;
+import javax.swing.*;
+import java.awt.*;
 
 public class SemillaRara extends ObjetoInventario {
 
-    public SemillaRara(int x, int y) {
-        super(x, y, 25, 25, "Semilla Rara");
-    }
+    private Image imagen;
 
-    @Override
-    public void dibujar(Graphics g) {
-        if (!recogido) {
-            g.setColor(new Color(0, 150, 0)); // verde oscuro
-            g.fillOval(x, y, ancho, alto);
+    public SemillaRara(int x, int y) {
+        super(x, y, 32, 32, "Semilla Rara");
+
+        try {
+            imagen = new ImageIcon(getClass().getResource("/autonoma/ProyectoFinal/resources/semilla_rara.png")).getImage();
+        } catch (Exception e) {
+            imagen = null;
         }
     }
 
     @Override
     public void aplicarEfecto(Jugador jugador) {
-        jugador.getNivel().eliminarTodosLosEnemigos(); // efecto: mata todo
+        Nivel nivel = jugador.getNivel();
+        if (nivel != null) {
+            nivel.eliminarTodasLasPlantasCorruptas();
+        }
+    }
+
+    @Override
+    public void dibujar(Graphics g) {
+        if (imagen != null) {
+            g.drawImage(imagen, getX(), getY(), getAncho(), getAlto(), null);
+        } else {
+            g.setColor(Color.MAGENTA);
+            g.fillOval(getX(), getY(), getAncho(), getAlto());
+        }
+    }
+
+    @Override
+    public Rectangle getBounds() {
+        return new Rectangle(getX(), getY(), getAncho(), getAlto());
     }
 }

@@ -7,43 +7,37 @@ package autonoma.ProyectoFinal.models;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 
-/**
- * Clase base abstracta para cualquier objeto que puede estar en el inventario.
- */
-public abstract class ObjetoInventario extends Entidad {
+public abstract class ObjetoInventario {
+
+    protected int x, y, ancho, alto;
     protected String nombre;
-    protected boolean recogido;
 
     public ObjetoInventario(int x, int y, int ancho, int alto, String nombre) {
-        super(x, y, ancho, alto);
+        this.x = x;
+        this.y = y;
+        this.ancho = ancho;
+        this.alto = alto;
         this.nombre = nombre;
-        this.recogido = false;
     }
 
     public String getNombre() {
         return nombre;
     }
 
-    public boolean estaRecogido() {
-        return recogido;
-    }
-
-    public void recoger() {
-        recogido = true;
-    }
-
     public abstract void aplicarEfecto(Jugador jugador);
 
-    @Override
-    public void actualizar() {
-        // No se mueven por sí solos
+    // Puede ser sobrescrito por objetos que tengan imagen
+    public void dibujar(Graphics g) {
+        g.fillRect(x, y, ancho, alto);
     }
 
-    @Override
-    public abstract void dibujar(Graphics g);
-
-    @Override
     public Rectangle getBounds() {
         return new Rectangle(x, y, ancho, alto);
     }
+
+    // Getters útiles
+    public int getX() { return x; }
+    public int getY() { return y; }
+    public int getAncho() { return ancho; }
+    public int getAlto() { return alto; }
 }

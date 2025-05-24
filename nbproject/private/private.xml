@@ -3,28 +3,29 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/juanl/Desktop/POO/Git/ProyectoFinal/src/autonoma/ProyectoFinal/models/PlantaAmistosa.java</file>
             <file>file:/C:/Users/juanl/Desktop/POO/Git/ProyectoFinal/src/autonoma/ProyectoFinal/models/SemillaRara.java</file>
-            <file>file:/C:/Users/juanl/Desktop/POO/Git/ProyectoFinal/src/autonoma/ProyectoFinal/interfaces/Dañable.java</file>
-            <file>file:/C:/Users/juanl/Desktop/POO/Git/ProyectoFinal/src/autonoma/ProyectoFinal/models/Objeto.java</file>
+            <file>file:/C:/Users/juanl/Desktop/POO/Git/ProyectoFinal/src/autonoma/ProyectoFinal/resources/FlorCarnivora.png</file>
+            <file>file:/C:/Users/juanl/Desktop/POO/Git/ProyectoFinal/src/autonoma/ProyectoFinal/resources/PlantaAmistosa.png</file>
+            <file>file:/C:/Users/juanl/Desktop/POO/Git/ProyectoFinal/src/autonoma/ProyectoFinal/resources/pocion_curativa.png</file>
             <file>file:/C:/Users/juanl/Desktop/POO/Git/ProyectoFinal/src/autonoma/ProyectoFinal/views/Juego.java</file>
-            <file>file:/C:/Users/juanl/Desktop/POO/Git/ProyectoFinal/src/autonoma/ProyectoFinal/models/Entidad.java</file>
+            <file>file:/C:/Users/juanl/Desktop/POO/Git/ProyectoFinal/src/autonoma/ProyectoFinal/models/PocionCurativa.java</file>
             <file>file:/C:/Users/juanl/Desktop/POO/Git/ProyectoFinal/src/autonoma/ProyectoFinal/views/MenuPrincipal.java</file>
-            <file>file:/C:/Users/juanl/Desktop/POO/Git/ProyectoFinal/src/autonoma/ProyectoFinal/models/PosicionCurativa.java</file>
             <file>file:/C:/Users/juanl/Desktop/POO/Git/ProyectoFinal/src/autonoma/ProyectoFinal/models/Rociador.java</file>
             <file>file:/C:/Users/juanl/Desktop/POO/Git/ProyectoFinal/src/autonoma/ProyectoFinal/resources/CactusExplosivo.png</file>
             <file>file:/C:/Users/juanl/Desktop/POO/Git/ProyectoFinal/src/autonoma/ProyectoFinal/models/Nivel.java</file>
             <file>file:/C:/Users/juanl/Desktop/POO/Git/ProyectoFinal/src/autonoma/ProyectoFinal/models/Inventario.java</file>
-            <file>file:/C:/Users/juanl/Desktop/POO/Git/ProyectoFinal/src/autonoma/ProyectoFinal/interfaces/Recolectable.java</file>
-            <file>file:/C:/Users/juanl/Desktop/POO/Git/ProyectoFinal/src/autonoma/ProyectoFinal/models/HiedraVenenosa.java</file>
+            <file>file:/C:/Users/juanl/Desktop/POO/Git/ProyectoFinal/src/autonoma/ProyectoFinal/resources/jugador.png</file>
+            <file>file:/C:/Users/juanl/Desktop/POO/Git/ProyectoFinal/src/autonoma/ProyectoFinal/models/ObjetoInventario.java</file>
             <file>file:/C:/Users/juanl/Desktop/POO/Git/ProyectoFinal/src/autonoma/ProyectoFinal/models/Jugador.java</file>
             <file>file:/C:/Users/juanl/Desktop/POO/Git/ProyectoFinal/src/autonoma/ProyectoFinal/models/ArchivoPuntaje.java</file>
             <file>file:/C:/Users/juanl/Desktop/POO/Git/ProyectoFinal/src/autonoma/ProyectoFinal/models/CactusExplosivo.java</file>
             <file>file:/C:/Users/juanl/Desktop/POO/Git/ProyectoFinal/src/autonoma/ProyectoFinal/main/Main.java</file>
             <file>file:/C:/Users/juanl/Desktop/POO/Git/ProyectoFinal/src/autonoma/ProyectoFinal/resources/HiedraVenenosa.png</file>
+            <file>file:/C:/Users/juanl/Desktop/POO/Git/ProyectoFinal/src/autonoma/ProyectoFinal/resources/semilla_rara.png</file>
+            <file>file:/C:/Users/juanl/Desktop/POO/Git/ProyectoFinal/src/autonoma/ProyectoFinal/views/PantallaDificultad.java</file>
+            <file>file:/C:/Users/juanl/Desktop/POO/Git/ProyectoFinal/src/autonoma/ProyectoFinal/resources/esencia_magica.png</file>
             <file>file:/C:/Users/juanl/Desktop/POO/Git/ProyectoFinal/src/autonoma/ProyectoFinal/models/EsenciaMagica.java</file>
-            <file>file:/C:/Users/juanl/Desktop/POO/Git/ProyectoFinal/src/autonoma/ProyectoFinal/models/FlorCarnivora.java</file>
-            <file>file:/C:/Users/juanl/Desktop/POO/Git/ProyectoFinal/src/autonoma/ProyectoFinal/models/PlantaCorrupta.java</file>
+            <file>file:/C:/Users/juanl/Desktop/POO/Git/ProyectoFinal/src/autonoma/ProyectoFinal/resources/menu_fondo.png</file>
         </group>
     </open-files>
 </project-private>

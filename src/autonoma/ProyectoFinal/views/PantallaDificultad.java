@@ -7,16 +7,15 @@ package autonoma.ProyectoFinal.views;
 import javax.swing.*;
 import java.awt.*;
 
-/**
- * Pantalla para seleccionar la dificultad del juego.
- */
 public class PantallaDificultad extends JPanel {
 
     private Image fondo;
+    private JFrame ventana;
 
-    public PantallaDificultad(JFrame frame) {
+    public PantallaDificultad(JFrame ventana) {
+        this.ventana = ventana;
         setLayout(null);
-        setPreferredSize(new Dimension(800, 600));
+        setPreferredSize(new Dimension(900, 700));
 
         // Fondo
         try {
@@ -25,31 +24,40 @@ public class PantallaDificultad extends JPanel {
             fondo = null;
         }
 
-        
+        int panelAncho = 900;
+        int botonAncho = 200;
+        int xCentro = (panelAncho - botonAncho) / 2;
 
-        // Botones bajados visualmente
+        // Botón Fácil
         JButton facil = new JButton("Fácil");
-        JButton media = new JButton("Media");
-        JButton dificil = new JButton("Difícil");
-
-        facil.setBounds(300, 240, 200, 40);
-        media.setBounds(300, 300, 200, 40);
-        dificil.setBounds(300, 360, 200, 40);
-
+        facil.setBounds(xCentro, 300, botonAncho, 40);
         add(facil);
+
+        // Botón Media
+        JButton media = new JButton("Media");
+        media.setBounds(xCentro, 370, botonAncho, 40);
         add(media);
+
+        // Botón Difícil
+        JButton dificil = new JButton("Difícil");
+        dificil.setBounds(xCentro, 440, botonAncho, 40);
         add(dificil);
 
         // Acciones
-        facil.addActionListener(e -> iniciarJuego(frame, 1));
-        media.addActionListener(e -> iniciarJuego(frame, 2));
-        dificil.addActionListener(e -> iniciarJuego(frame, 3));
+        facil.addActionListener(e -> iniciarJuego(1));
+        media.addActionListener(e -> iniciarJuego(2));
+        dificil.addActionListener(e -> iniciarJuego(3));
     }
 
-    private void iniciarJuego(JFrame frame, int dificultad) {
+    private void iniciarJuego(int dificultad) {
         Juego juego = new Juego(dificultad);
-        frame.setContentPane(juego);
-        frame.revalidate();
+        ventana.setContentPane(juego);
+        ventana.revalidate();
+        ventana.pack();
+        ventana.setLocationRelativeTo(null);
+        ventana.setVisible(true);
+
+        // 🔥 Esto permite que el panel `Juego` reciba las teclas
         juego.requestFocusInWindow();
     }
 
@@ -61,6 +69,7 @@ public class PantallaDificultad extends JPanel {
         }
     }
 }
+
 
 
 

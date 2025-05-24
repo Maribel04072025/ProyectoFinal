@@ -10,31 +10,34 @@ import java.awt.Rectangle;
 
 public class Rociador extends Entidad {
 
-    private int x, y, ancho, alto;
     private int velocidadX = 0, velocidadY = 0;
     private boolean activo = true;
 
-    public Rociador(int x, int y, int ancho, int alto, String direccion) {
-        super(x, y, ancho, alto);
-        this.x = x;
-        this.y = y;
-        this.ancho = ancho;
-        this.alto = alto;
+    public Rociador(int x, int y, int baseAncho, int baseAlto, String direccion) {
+        super(x, y, baseAncho, baseAlto);
 
         int velocidad = 10;
         switch (direccion) {
-            case "arriba":
+            case "arriba" -> {
                 velocidadY = -velocidad;
-                break;
-            case "abajo":
+                this.ancho = 8;
+                this.alto = 16;
+            }
+            case "abajo" -> {
                 velocidadY = velocidad;
-                break;
-            case "izquierda":
+                this.ancho = 8;
+                this.alto = 16;
+            }
+            case "izquierda" -> {
                 velocidadX = -velocidad;
-                break;
-            case "derecha":
+                this.ancho = 16;
+                this.alto = 8;
+            }
+            case "derecha" -> {
                 velocidadX = velocidad;
-                break;
+                this.ancho = 16;
+                this.alto = 8;
+            }
         }
     }
 
@@ -42,8 +45,9 @@ public class Rociador extends Entidad {
     public void actualizar() {
         x += velocidadX;
         y += velocidadY;
-        // Podés desactivar si sale de pantalla
-        if (x < 0 || x > 1000 || y < 0 || y > 800) activo = false;
+        if (x < 0 || x > 1000 || y < 0 || y > 800) {
+            activo = false;
+        }
     }
 
     @Override
@@ -65,4 +69,3 @@ public class Rociador extends Entidad {
         return new Rectangle(x, y, ancho, alto);
     }
 }
-

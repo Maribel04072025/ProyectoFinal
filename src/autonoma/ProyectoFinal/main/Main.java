@@ -14,7 +14,8 @@ public class Main {
             JFrame ventana = new JFrame("El Reino de las Plantas Mágicas");
             ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             ventana.setContentPane(new MenuPrincipal());
-            ventana.setSize(800, 600);
+            ventana.pack();
+            ventana.setResizable(false);
             ventana.setLocationRelativeTo(null);
             ventana.setVisible(true);
         });

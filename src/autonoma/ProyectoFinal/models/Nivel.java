@@ -4,7 +4,7 @@
  */
 package autonoma.ProyectoFinal.models;
 
-import java.awt.Graphics;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -16,32 +16,29 @@ public class Nivel {
     private List<Rociador> rociadores;
     private List<PlantaAmistosa> plantasAmistosas;
     private List<ObjetoInventario> objetos;
+
     private int ancho, alto;
     private int puntaje;
     private int dificultad;
-    private static Jugador jugadorEstatico;
-    
 
     public Nivel(int ancho, int alto, int dificultad) {
         this.ancho = ancho;
         this.alto = alto;
         this.dificultad = dificultad;
-        jugador = new Jugador(ancho / 10, alto - 80, 50, 50, dificultad);
-        jugador.setNivel(this);
-
-        jugadorEstatico = jugador;
 
         enemigos = new ArrayList<>();
         rociadores = new ArrayList<>();
         plantasAmistosas = new ArrayList<>();
         objetos = new ArrayList<>();
 
-        jugador = new Jugador(ancho / 10, alto - 80, 50, 50, dificultad);
+        // Jugador centrado
+        jugador = new Jugador(ancho / 2 - 25, alto / 2 - 25, 50, 50, dificultad);
         jugador.setNivel(this);
     }
 
     public void dibujar(Graphics g) {
         jugador.dibujar(g);
+
         for (Rociador r : rociadores) r.dibujar(g);
         for (PlantaCorrupta enemigo : enemigos) enemigo.dibujar(g);
         for (PlantaAmistosa planta : plantasAmistosas) planta.dibujar(g);
@@ -51,6 +48,7 @@ public class Nivel {
     public void actualizar() {
         jugador.actualizar();
 
+        // Actualizar proyectiles
         Iterator<Rociador> itR = rociadores.iterator();
         while (itR.hasNext()) {
             Rociador r = itR.next();
@@ -111,9 +109,14 @@ public class Nivel {
         Iterator<ObjetoInventario> it = objetos.iterator();
         while (it.hasNext()) {
             ObjetoInventario obj = it.next();
-            if (!obj.estaRecogido() && obj.getBounds().intersects(jugador.getBounds())) {
-                jugador.getInventario().agregarObjeto(obj);
-                obj.recoger();
+            if (jugador.getBounds().intersects(obj.getBounds())) {
+                if (obj instanceof SemillaRara) {
+                    jugador.getInventario().agregarObjeto(new SemillaRara(0, 0));
+                } else if (obj instanceof PocionCurativa) {
+                    jugador.getInventario().agregarObjeto(new PocionCurativa(0, 0));
+                } else if (obj instanceof EsenciaMagica) {
+                    jugador.getInventario().agregarObjeto(new EsenciaMagica(0, 0));
+                }
                 it.remove();
             }
         }
@@ -131,7 +134,6 @@ public class Nivel {
             default -> enemigo = new FlorCarnivora(x, y, 40, 40, dificultad);
         }
 
-        enemigo.setDanioBase(dificultad);
         enemigos.add(enemigo);
         new Thread(enemigo).start();
     }
@@ -161,56 +163,21 @@ public class Nivel {
     }
 
     public void disparar() {
-        int dx = jugador.getDireccionDisparoX();
-        int dy = jugador.getDireccionDisparoY();
-
-        int px = jugador.getX();
-        int py = jugador.getY();
-        int pw = jugador.getAncho();
-        int ph = jugador.getAlto();
-
-        int rx = px, ry = py;
-        String dir;
-
-        if (dx > 0) {
-            dir = "derecha";
-            rx = px + pw;
-            ry = py + ph / 2 - 5;
-        } 
-        else if (dx < 0) {
-            dir = "izquierda";
-            rx = px - 20;
-            ry = py + ph / 2 - 5;
-        }     
-        else if (dy > 0) {
-            dir = "abajo";
-            rx = px + pw / 2 - 5;
-            ry = py + ph;
-        } 
-        else if (dy < 0) {
-            dir = "arriba";
-            rx = px + pw / 2 - 5;
-            ry = py - 20;
-        } 
-        else {
-            dir = "derecha";
-            rx = px + pw;
-            ry = py + ph / 2 - 5;
-        }
-
-        Rociador r = new Rociador(rx, ry, 20, 10, dir);
+        String direccion = jugador.getDireccion();
+        Rociador r = new Rociador(
+            jugador.getX() + jugador.getAncho() / 2,
+            jugador.getY() + jugador.getAlto() / 2,
+            16, 16,
+            direccion
+        );
         rociadores.add(r);
     }
 
-    public void eliminarTodosLosEnemigos() {
+    public void eliminarTodasLasPlantasCorruptas() {
         for (PlantaCorrupta p : enemigos) {
             p.detener();
         }
         enemigos.clear();
-    }
-    
-    public static Jugador getJugadorEstatico() {
-        return jugadorEstatico;
     }
 
     // Getters
