@@ -5,9 +5,20 @@
 package autonoma.ProyectoFinal.interfaces;
 
 /**
- *
- * @author juane
+ * Interfaz que representa objetos que pueden recibir daño.
+ * 
+ * Implementar esta interfaz permite que un objeto sea capaz
+ * de recibir una cantidad determinada de daño, afectando su estado.
+ * 
+ * @author Maribel Ceballos 
+ * @since 1.0
  */
 public interface Dañable {
+
+    /**
+     * Aplica daño al objeto con la cantidad especificada.
+     * 
+     * @param cantidad la cantidad de daño que se debe recibir.
+     */
     void recibirDaño(int cantidad);
 }
