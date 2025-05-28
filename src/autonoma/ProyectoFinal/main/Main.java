@@ -14,7 +14,7 @@ import javax.swing.*;
  * Esta clase contiene el método main que inicia la aplicación creando
  * la ventana principal y mostrando la interfaz gráfica del menú principal.
  * 
- * @author TuNombre
+ * @author Juan Jacobo Cañas
  * @version 20250524
  * @since 1.0
  */
