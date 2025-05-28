@@ -96,7 +96,7 @@ public class PantallaDificultad extends JPanel {
             g.drawImage(fondo, 0, 0, getWidth(), getHeight(), this);
         }
     }
-}
+
 
 
 
